@@ -1,179 +1,152 @@
-CREATE DATABASE AlongFit;
-USE AlongFit;
+PRAGMA foreign_keys = ON;
 
--- =========================
--- TABELA USUARIO
+-- TABELA Usuario
 -- =========================
 
 CREATE TABLE Usuario (
-    idUsuario INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(45) NOT NULL,
+    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    nome VARCHAR(45) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    dataNasc DATE NOT NULL
+    data_nasc DATE NOT NULL
 );
 
--- =========================
--- TABELA TIPO DOR
+-- TABELA Tipo_dor
 -- =========================
 
-CREATE TABLE TipoDor (
-    idTipoDor INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(45) NOT NULL,
+CREATE TABLE Tipo_dor (
+    id_tipo_dor INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    nome VARCHAR(45) NOT NULL,
     descricao VARCHAR(100),
     regiao_corpo VARCHAR(45)
 );
 
+-- TABELA Usuario_dor
 -- =========================
--- TABELA ALONGAMENTO
+
+CREATE TABLE Usuario_dor (
+    id_usuario_dor INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    usuario_id INTEGER NOT NULL,
+    tipo_dor_id INTEGER NOT NULL,
+
+    intensidade INTEGER,
+    frequencia VARCHAR(20),
+    observacao VARCHAR(255),
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES Usuario(id_usuario)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (tipo_dor_id)
+        REFERENCES Tipo_dor(id_tipo_dor)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+
+-- TABELA Alongamento
 -- =========================
 
 CREATE TABLE Alongamento (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_alongamento INTEGER PRIMARY KEY AUTOINCREMENT,
+
     nome VARCHAR(45) NOT NULL,
-    descricao VARCHAR(250),
-    duracao INT NOT NULL
+    descricao VARCHAR(100),
+    duracao INTEGER
 );
 
+
+-- TABELA Alongamento_tipo_dor
 -- =========================
--- TABELA USER DOR
--- =========================
 
-CREATE TABLE UserDor (
-    TipoDor_idTipoDor INT,
-    Usuario_idUsuario INT,
+CREATE TABLE Alongamento_tipo_dor (
+    alongamento_id INTEGER NOT NULL,
+    tipo_dor_id INTEGER NOT NULL,
 
-    PRIMARY KEY (TipoDor_idTipoDor, Usuario_idUsuario),
+    PRIMARY KEY (alongamento_id, tipo_dor_id),
 
-    CONSTRAINT fk_userdor_tipodor
-        FOREIGN KEY (TipoDor_idTipoDor)
-        REFERENCES TipoDor(idTipoDor)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_userdor_usuario
-        FOREIGN KEY (Usuario_idUsuario)
-        REFERENCES Usuario(idUsuario)
+    FOREIGN KEY (alongamento_id)
+        REFERENCES Alongamento(id_alongamento)
         ON DELETE CASCADE
-);
+        ON UPDATE CASCADE,
 
--- =========================
--- TABELA RECOMENDACAO ALONG
--- =========================
-
-CREATE TABLE recomendacao_along (
-    TipoDor_idTipoDor INT,
-    Alongamento_idAI INT,
-
-    PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAI),
-
-    CONSTRAINT fk_recomendacao_tipodor
-        FOREIGN KEY (TipoDor_idTipoDor)
-        REFERENCES TipoDor(idTipoDor)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_recomendacao_alongamento
-        FOREIGN KEY (Alongamento_idAI)
-        REFERENCES Alongamento(id)
+    FOREIGN KEY (tipo_dor_id)
+        REFERENCES Tipo_dor(id_tipo_dor)
         ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
+
+-- TABELA Jornada_trabalho
 -- =========================
--- TABELA HISTORICO
--- =========================
 
-CREATE TABLE HistoricoAlon (
-    idHisto INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE Jornada_trabalho (
+    id_jornada INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    Alongamento_idAI INT NOT NULL,
-    Usuario_idUsuario INT NOT NULL,
+    usuario_id INTEGER NOT NULL,
 
-    Inicio DATETIME NOT NULL,
-    tempoTotal INT,
-    dataFim DATETIME,
+    inicio_jornada DATETIME NOT NULL,
+    fim_jornada DATETIME,
 
-    CONSTRAINT fk_hist_alongamento
-        FOREIGN KEY (Alongamento_idAI)
-        REFERENCES Alongamento(id)
-        ON DELETE CASCADE,
+    intervalo_lembrete_min INTEGER NOT NULL,
 
-    CONSTRAINT fk_hist_usuario
-        FOREIGN KEY (Usuario_idUsuario)
-        REFERENCES Usuario(idUsuario)
+    FOREIGN KEY (usuario_id)
+        REFERENCES Usuario(id_usuario)
         ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
--- =========================
--- TABELA JORNADA TRABALHO
--- =========================
-
-CREATE TABLE JornadaTrabalho (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    inicioJornd DATETIME NOT NULL,
-    tempoLembrete INT,
-    fimJornd DATETIME,
-
-    Usuario_idUsuario INT NOT NULL,
-
-    CONSTRAINT fk_jornada_usuario
-        FOREIGN KEY (Usuario_idUsuario)
-        REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE
-);
-
--- =========================
--- TABELA PAUSAS
+ TABELA Pausas
 -- =========================
 
 CREATE TABLE Pausas (
-    idPausas INT AUTO_INCREMENT PRIMARY KEY,
+    id_pausa INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    inicio DATETIME NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    alongamento_id INTEGER NOT NULL,
+
+    inicio DATETIME,
     fim DATETIME,
-    concluida ENUM('SIM','NAO') DEFAULT 'NAO',
 
-    Usuario_idUsuario INT NOT NULL,
+    status VARCHAR(20),
 
-    CONSTRAINT fk_pausa_usuario
-        FOREIGN KEY (Usuario_idUsuario)
-        REFERENCES Usuario(idUsuario)
+    FOREIGN KEY (usuario_id)
+        REFERENCES Usuario(id_usuario)
         ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (alongamento_id)
+        REFERENCES Alongamento(id_alongamento)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
--- =========================
--- INDEX
--- =========================
 
-CREATE INDEX idx_usuarioDor_usuario
-ON UserDor (Usuario_idUsuario);
-
-CREATE INDEX idx_usuarioDor_tipoDor
-ON UserDor (TipoDor_idTipoDor);
-
-CREATE INDEX idx_hist_usuario
-ON HistoricoAlon (Usuario_idUsuario);
-
-CREATE INDEX idx_hist_alongamento
-ON HistoricoAlon (Alongamento_idAI);
-
--- =========================
--- TRIGGER
+ TABELA Historico_alongamento
 -- =========================
 
-DELIMITER $$
+CREATE TABLE Historico_alongamento (
+    id_historico INTEGER PRIMARY KEY AUTOINCREMENT,
 
-CREATE TRIGGER trg_calc_tempo
-BEFORE UPDATE ON HistoricoAlon
-FOR EACH ROW
-BEGIN
+    usuario_id INTEGER NOT NULL,
+    alongamento_id INTEGER NOT NULL,
 
-    SET NEW.tempoTotal =
-    TIMESTAMPDIFF(
-        MINUTE,
-        NEW.Inicio,
-        NEW.dataFim
-    );
+    inicio DATETIME NOT NULL,
+    data_fim DATETIME,
 
-END $$
+    tempo_total INTEGER,
 
-DELIMITER ;
+    FOREIGN KEY (usuario_id)
+        REFERENCES Usuario(id_usuario)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (alongamento_id)
+        REFERENCES Alongamento(id_alongamento)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
