@@ -1,7 +1,7 @@
 from datetime import datetime
 from model.JornadaTrabalho import JornadaTrabalho
 from model.UserDor import UserDor
-from gerenciador_banco import GerenciadorBanco
+from controller.gerenciador_banco import GerenciadorBanco
 
 class ConfigController:
     def __init__(self, identificador_usuario_ativo):
@@ -23,7 +23,7 @@ class ConfigController:
                 inicioJornd=data_hora_atual,
                 tempoLembrete=minutos_pausa,
                 usuario_idUsuario=self.identificador_usuario_ativo,
-                fimJond=None
+                fimJornd=None
             )
             
             id_jornada_criada = self.banco_dados.registrar_inicio_jornada(nova_jornada)

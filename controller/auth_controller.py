@@ -1,5 +1,5 @@
 from model.Usuario import Usuario
-from gerenciador_banco import GerenciadorBanco
+from controller.gerenciador_banco import GerenciadorBanco
 
 class AuthController:
     def __init__(self):
@@ -21,7 +21,7 @@ class AuthController:
         try:
             novo_usuario = Usuario(
                 idUsuario=None,
-                nome=nome_digitado,
+                Nome=nome_digitado,
                 email=email_digitado,
                 senha=senha_digitada,
                 dataNasc=data_nascimento_digitada

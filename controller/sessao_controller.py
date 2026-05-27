@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from gerenciador_banco import GerenciadorBanco
+from controller.gerenciador_banco import GerenciadorBanco
 from model.Pausas import Pausas
 from model.HistoricoAlon import HistoricoAlon
 
@@ -75,13 +75,13 @@ class SessaoController:
                 idPausas=None,
                 inicio=data_hora_inicio_formatada,
                 fim=data_hora_fim_formatada,
-                concluida='Sim',
+                concluida='SIM',
                 usuario_idUsuario=self.identificador_usuario_logado
             )
             
             novo_historico = HistoricoAlon(
                 idHisto=None,
-                alongamento_idAl=alongamento_selecionado.id,
+                Alongamento_idAI=alongamento_selecionado.id,
                 usuario_idUsuario=self.identificador_usuario_logado,
                 inicio=data_hora_inicio_formatada,
                 tempoTotal=alongamento_selecionado.duracao,

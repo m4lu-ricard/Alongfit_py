@@ -1,4 +1,4 @@
-from gerenciador_banco import GerenciadorBanco
+from controller.gerenciador_banco import GerenciadorBanco
 
 class EstatisticasController:
     def __init__(self, identificador_usuario_ativo):
