@@ -63,26 +63,7 @@ INSERT INTO Alongamento (nome, descricao, duracao) VALUES
 ('Alongamento Corpo Inteiro', 'Estique o corpo completamente', 15),
 ('Alongamento Articular', 'Movimente as articulacoes suavemente', 13);
 
--- ==========================================
--- USUARIO_DOR
--- ==========================================
 
-INSERT INTO Usuario_dor (tipo_dor_id, usuario_id) VALUES
-(1,1),
-(2,2),
-(3,3),
-(4,4),
-(5,5),
-(6,6),
-(7,7),
-(8,8),
-(9,9),
-(10,10),
-(11,11),
-(12,12),
-(13,13),
-(14,14),
-(15,15);
 
 -- ==========================================
 -- ALONGAMENTO_TIPO_DOR
