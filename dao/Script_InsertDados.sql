@@ -1,8 +1,10 @@
+PRAGMA foreign_keys = ON;
+
 -- ==========================================
 -- USUARIOS
 -- ==========================================
-SET SQL_SAFE_UPDATES = 0;
-INSERT INTO Usuario (Nome, email, senha, dataNasc) VALUES
+
+INSERT INTO Usuario (nome, email, senha, data_nasc) VALUES
 ('Maria Silva', 'maria@email.com', '123456', '2005-01-10'),
 ('Joao Pedro', 'joao@email.com', '123456', '2004-02-11'),
 ('Ana Clara', 'ana@email.com', '123456', '2003-03-12'),
@@ -23,7 +25,7 @@ INSERT INTO Usuario (Nome, email, senha, dataNasc) VALUES
 -- TIPOS DE DOR
 -- ==========================================
 
-INSERT INTO TipoDor (Nome, descricao, regiao_corpo) VALUES
+INSERT INTO Tipo_dor (nome, descricao, regiao_corpo) VALUES
 ('Dor Lombar', 'Dor causada por postura inadequada', 'Coluna'),
 ('Dor Cervical', 'Dor no pescoco', 'Pescoco'),
 ('Dor no Ombro', 'Tensao muscular', 'Ombro'),
@@ -62,10 +64,10 @@ INSERT INTO Alongamento (nome, descricao, duracao) VALUES
 ('Alongamento Articular', 'Movimente as articulacoes suavemente', 13);
 
 -- ==========================================
--- USER DOR
+-- USUARIO_DOR
 -- ==========================================
 
-INSERT INTO UserDor (TipoDor_idTipoDor, Usuario_idUsuario) VALUES
+INSERT INTO Usuario_dor (tipo_dor_id, usuario_id) VALUES
 (1,1),
 (2,2),
 (3,3),
@@ -83,10 +85,10 @@ INSERT INTO UserDor (TipoDor_idTipoDor, Usuario_idUsuario) VALUES
 (15,15);
 
 -- ==========================================
--- RECOMENDACAO ALONG
+-- ALONGAMENTO_TIPO_DOR
 -- ==========================================
 
-INSERT INTO recomendacao_along (TipoDor_idTipoDor, Alongamento_idAI) VALUES
+INSERT INTO Alongamento_tipo_dor (alongamento_id, tipo_dor_id) VALUES
 (1,1),
 (2,2),
 (3,3),
@@ -105,77 +107,69 @@ INSERT INTO recomendacao_along (TipoDor_idTipoDor, Alongamento_idAI) VALUES
 
 -- ==========================================
 -- HISTORICO ALONGAMENTO
--- PRIMEIRO INSERT
 -- ==========================================
 
-INSERT INTO HistoricoAlon
-(Alongamento_idAI, Usuario_idUsuario, Inicio)
+INSERT INTO Historico_alongamento
+(alongamento_id, usuario_id, inicio, data_fim, tempo_total)
 VALUES
-(1,1,NOW()),
-(2,2,NOW()),
-(3,3,NOW()),
-(4,4,NOW()),
-(5,5,NOW()),
-(6,6,NOW()),
-(7,7,NOW()),
-(8,8,NOW()),
-(9,9,NOW()),
-(10,10,NOW()),
-(11,11,NOW()),
-(12,12,NOW()),
-(13,13,NOW()),
-(14,14,NOW()),
-(15,15,NOW());
-
--- ==========================================
--- UPDATE PARA ATIVAR A TRIGGER
--- ==========================================
-
-UPDATE HistoricoAlon
-SET dataFim = DATE_ADD(Inicio, INTERVAL 10 MINUTE);
+(1,1,datetime('now'),datetime('now','+10 minutes'),10),
+(2,2,datetime('now'),datetime('now','+10 minutes'),10),
+(3,3,datetime('now'),datetime('now','+10 minutes'),10),
+(4,4,datetime('now'),datetime('now','+10 minutes'),10),
+(5,5,datetime('now'),datetime('now','+10 minutes'),10),
+(6,6,datetime('now'),datetime('now','+10 minutes'),10),
+(7,7,datetime('now'),datetime('now','+10 minutes'),10),
+(8,8,datetime('now'),datetime('now','+10 minutes'),10),
+(9,9,datetime('now'),datetime('now','+10 minutes'),10),
+(10,10,datetime('now'),datetime('now','+10 minutes'),10),
+(11,11,datetime('now'),datetime('now','+10 minutes'),10),
+(12,12,datetime('now'),datetime('now','+10 minutes'),10),
+(13,13,datetime('now'),datetime('now','+10 minutes'),10),
+(14,14,datetime('now'),datetime('now','+10 minutes'),10),
+(15,15,datetime('now'),datetime('now','+10 minutes'),10);
 
 -- ==========================================
 -- JORNADA DE TRABALHO
 -- ==========================================
 
-INSERT INTO JornadaTrabalho
-(inicioJornd, tempoLembrete, fimJornd, Usuario_idUsuario)
+INSERT INTO Jornada_trabalho
+(usuario_id, inicio_jornada, fim_jornada, intervalo_lembrete_min)
 VALUES
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),1),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),2),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),3),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),4),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),5),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),6),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),7),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),8),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),9),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),10),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),11),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),12),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),13),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),14),
-(NOW(),30,DATE_ADD(NOW(), INTERVAL 8 HOUR),15);
+(1,datetime('now'),datetime('now','+8 hours'),30),
+(2,datetime('now'),datetime('now','+8 hours'),30),
+(3,datetime('now'),datetime('now','+8 hours'),30),
+(4,datetime('now'),datetime('now','+8 hours'),30),
+(5,datetime('now'),datetime('now','+8 hours'),30),
+(6,datetime('now'),datetime('now','+8 hours'),30),
+(7,datetime('now'),datetime('now','+8 hours'),30),
+(8,datetime('now'),datetime('now','+8 hours'),30),
+(9,datetime('now'),datetime('now','+8 hours'),30),
+(10,datetime('now'),datetime('now','+8 hours'),30),
+(11,datetime('now'),datetime('now','+8 hours'),30),
+(12,datetime('now'),datetime('now','+8 hours'),30),
+(13,datetime('now'),datetime('now','+8 hours'),30),
+(14,datetime('now'),datetime('now','+8 hours'),30),
+(15,datetime('now'),datetime('now','+8 hours'),30);
 
 -- ==========================================
 -- PAUSAS
 -- ==========================================
 
 INSERT INTO Pausas
-(inicio, fim, concluida, Usuario_idUsuario)
+(usuario_id, alongamento_id, inicio, fim, status)
 VALUES
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',1),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',2),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',3),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',4),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',5),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',6),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',7),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',8),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',9),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',10),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',11),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',12),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',13),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',14),
-(NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), 'SIM',15);
+(1,1,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(2,2,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(3,3,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(4,4,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(5,5,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(6,6,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(7,7,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(8,8,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(9,9,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(10,10,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(11,11,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(12,12,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(13,13,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(14,14,datetime('now'),datetime('now','+15 minutes'),'realizada'),
+(15,15,datetime('now'),datetime('now','+15 minutes'),'realizada');
