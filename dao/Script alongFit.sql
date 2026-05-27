@@ -1,152 +1,97 @@
 PRAGMA foreign_keys = ON;
 
+-- =========================
 -- TABELA Usuario
 -- =========================
-
 CREATE TABLE Usuario (
-    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nome VARCHAR(45) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    data_nasc DATE NOT NULL
+    idUsuario   INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nome        VARCHAR(45)  NOT NULL,
+    email       VARCHAR(255) NOT NULL UNIQUE,
+    senha       VARCHAR(255) NOT NULL,
+    dataNasc    DATE         NOT NULL
 );
 
--- TABELA Tipo_dor
 -- =========================
-
-CREATE TABLE Tipo_dor (
-    id_tipo_dor INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nome VARCHAR(45) NOT NULL,
-    descricao VARCHAR(100),
+-- TABELA TipoDor
+-- =========================
+CREATE TABLE TipoDor (
+    idTipoDor    INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nome         VARCHAR(45)  NOT NULL,
+    descricao    VARCHAR(100),
     regiao_corpo VARCHAR(45)
 );
 
--- TABELA Usuario_dor
 -- =========================
-
-CREATE TABLE Usuario_dor (
-    id_usuario_dor INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    usuario_id INTEGER NOT NULL,
-    tipo_dor_id INTEGER NOT NULL,
-
-    intensidade INTEGER,
-    frequencia VARCHAR(20),
-    observacao VARCHAR(255),
-
-    FOREIGN KEY (usuario_id)
-        REFERENCES Usuario(id_usuario)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    FOREIGN KEY (tipo_dor_id)
-        REFERENCES Tipo_dor(id_tipo_dor)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
-
 -- TABELA Alongamento
 -- =========================
-
 CREATE TABLE Alongamento (
-    id_alongamento INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    nome VARCHAR(45) NOT NULL,
-    descricao VARCHAR(100),
-    duracao INTEGER
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome     VARCHAR(45) NOT NULL,
+    descricao VARCHAR(45),
+    duracao  INTEGER
 );
 
-
--- TABELA Alongamento_tipo_dor
 -- =========================
-
-CREATE TABLE Alongamento_tipo_dor (
-    alongamento_id INTEGER NOT NULL,
-    tipo_dor_id INTEGER NOT NULL,
-
-    PRIMARY KEY (alongamento_id, tipo_dor_id),
-
-    FOREIGN KEY (alongamento_id)
-        REFERENCES Alongamento(id_alongamento)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    FOREIGN KEY (tipo_dor_id)
-        REFERENCES Tipo_dor(id_tipo_dor)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+-- TABELA recomendacao_along
+-- =========================
+CREATE TABLE recomendacao_along (
+    TipoDor_idTipoDor   INTEGER NOT NULL,
+    Alongamento_idAl    INTEGER NOT NULL,
+    Usuario_idUsuario   INTEGER NOT NULL,
+    PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario),
+    FOREIGN KEY (TipoDor_idTipoDor)
+        REFERENCES TipoDor(idTipoDor)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Alongamento_idAl)
+        REFERENCES Alongamento(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Usuario_idUsuario)
+        REFERENCES Usuario(idUsuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
--- TABELA Jornada_trabalho
 -- =========================
-
-CREATE TABLE Jornada_trabalho (
-    id_jornada INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    usuario_id INTEGER NOT NULL,
-
-    inicio_jornada DATETIME NOT NULL,
-    fim_jornada DATETIME,
-
-    intervalo_lembrete_min INTEGER NOT NULL,
-
-    FOREIGN KEY (usuario_id)
-        REFERENCES Usuario(id_usuario)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+-- TABELA HistoricoAlon
+-- =========================
+CREATE TABLE HistoricoAlon (
+    idHisto             INTEGER PRIMARY KEY AUTOINCREMENT,
+    Alongamento_idAl    INTEGER  NOT NULL,
+    Usuario_idUsuario   INTEGER  NOT NULL,
+    Inicio              DATETIME NOT NULL,
+    tempoTotal          INTEGER,
+    dataFim             DATETIME,
+    FOREIGN KEY (Alongamento_idAl)
+        REFERENCES Alongamento(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Usuario_idUsuario)
+        REFERENCES Usuario(idUsuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
- TABELA Pausas
 -- =========================
+-- TABELA JornadaTrabalho
+-- =========================
+CREATE TABLE JornadaTrabalho (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    inicioJornd       DATETIME NOT NULL,
+    tempoLembrete     INTEGER  NOT NULL,
+    Usuario_idUsuario INTEGER  NOT NULL,
+    fimJornd          DATETIME,
+    FOREIGN KEY (Usuario_idUsuario)
+        REFERENCES Usuario(idUsuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
 
+-- =========================
+-- TABELA Pausas
+-- =========================
 CREATE TABLE Pausas (
-    id_pausa INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    usuario_id INTEGER NOT NULL,
-    alongamento_id INTEGER NOT NULL,
-
-    inicio DATETIME,
-    fim DATETIME,
-
-    status VARCHAR(20),
-
-    FOREIGN KEY (usuario_id)
-        REFERENCES Usuario(id_usuario)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    FOREIGN KEY (alongamento_id)
-        REFERENCES Alongamento(id_alongamento)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
-
- TABELA Historico_alongamento
--- =========================
-
-CREATE TABLE Historico_alongamento (
-    id_historico INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    usuario_id INTEGER NOT NULL,
-    alongamento_id INTEGER NOT NULL,
-
-    inicio DATETIME NOT NULL,
-    data_fim DATETIME,
-
-    tempo_total INTEGER,
-
-    FOREIGN KEY (usuario_id)
-        REFERENCES Usuario(id_usuario)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    FOREIGN KEY (alongamento_id)
-        REFERENCES Alongamento(id_alongamento)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    idPausas          INTEGER PRIMARY KEY AUTOINCREMENT,
+    inicio            DATETIME,
+    fim               DATETIME,
+    concluida         VARCHAR(20) CHECK(concluida IN ('concluida','ignorada','pendente')),
+    Usuario_idUsuario INTEGER NOT NULL,
+    FOREIGN KEY (Usuario_idUsuario)
+        REFERENCES Usuario(idUsuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
