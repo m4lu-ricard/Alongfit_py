@@ -1,7 +1,7 @@
 class Usuario:
-    def __init__(self, idUsuario, nome, email, senha, dataNasc=None):
+    def __init__(self, idUsuario, Nome, email, senha, dataNasc=None):
         self.idUsuario = idUsuario
-        self.nome = nome
+        self.Nome = Nome
         self.email = email
         self.senha = senha
         self.dataNasc = dataNasc
@@ -20,14 +20,14 @@ class Usuario:
         self._idUsuario = valor
 
     @property
-    def nome(self):
-        return self._nome
+    def Nome(self):
+        return self._Nome
 
-    @nome.setter
-    def nome(self, valor):
+    @Nome.setter
+    def Nome(self, valor):
         if not valor or str(valor).strip() == "":
             raise ValueError("O nome do usuário não pode ser vazio.")
-        self._nome = valor
+        self._Nome = valor
 
     @property
     def email(self):

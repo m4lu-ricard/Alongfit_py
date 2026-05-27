@@ -1,7 +1,7 @@
 class HistoricoAlon:
-    def __init__(self, idHisto, alongamento_idAl, usuario_idUsuario, inicio, tempoTotal, dataFim):
+    def __init__(self, idHisto, Alongamento_idAI, usuario_idUsuario, inicio, tempoTotal, dataFim):
         self.idHisto = idHisto
-        self.alongamento_idAl = alongamento_idAl
+        self.Alongamento_idAI = Alongamento_idAI
         self.usuario_idUsuario = usuario_idUsuario
         self.inicio = inicio
         self.tempoTotal = tempoTotal
@@ -16,14 +16,14 @@ class HistoricoAlon:
         self._idHisto = valor
 
     @property
-    def alongamento_idAl(self):
-        return self._alongamento_idAl
+    def Alongamento_idAI(self):
+        return self._alongamento_idAI
 
-    @alongamento_idAl.setter
-    def alongamento_idAl(self, valor):
+    @Alongamento_idAI.setter
+    def Alongamento_idAI(self, valor):
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do alongamento deve ser um número maior que zero.")
-        self._alongamento_idAl = valor
+        self._alongamento_idAI = valor
 
     @property
     def usuario_idUsuario(self):
