@@ -30,16 +30,16 @@ INSERT INTO Alongamento (nome, descricao, duracao) VALUES
 
 -- Recomendações de Alongamento (TipoDor + Alongamento + Usuário)
 INSERT INTO recomendacao_along (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario) VALUES
-(1, 1, 1), -- Cervicalgia → Rotação Cervical       → Ana
-(1, 2, 1), -- Cervicalgia → Extensão de Pescoço    → Ana
-(1, 7, 1), -- Cervicalgia → Alongamento Trapézio   → Ana
-(2, 3, 2), -- Lombalgia   → Alongamento Lombar      → Carlos
-(2, 4, 2), -- Lombalgia   → Inclinação Lateral      → Carlos
-(3, 5, 3), -- Tendinite   → Extensão de Punho       → Mariana
-(3, 6, 3), -- Tendinite   → Flexão de Punho         → Mariana
-(4, 5, 3), -- Túnel Carpo → Extensão de Punho       → Mariana
-(5, 8, 4), -- Dorsalgia   → Abertura de Peito       → Pedro
-(5, 4, 4); -- Dorsalgia   → Inclinação Lateral      → Pedro
+(1, 1, 1),  
+(1, 2, 1), 
+(1, 7, 1), 
+(2, 3, 2), 
+(2, 4, 2),
+(3, 5, 3), 
+(3, 6, 3), 
+(4, 5, 3), 
+(5, 8, 4), 
+(5, 4, 4); 
 
 -- Histórico de Alongamentos
 INSERT INTO HistoricoAlon (Alongamento_idAl, Usuario_idUsuario, Inicio, tempoTotal, dataFim) VALUES
