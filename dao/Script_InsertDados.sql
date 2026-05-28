@@ -4,10 +4,10 @@
 
 -- Usuários
 INSERT INTO Usuario (Nome, email, senha, dataNasc) VALUES
-('Ana Souza',     'ana.souza@email.com',     'hash_senha_1', '1990-03-15'),
-('Carlos Lima',   'carlos.lima@email.com',   'hash_senha_2', '1985-07-22'),
-('Maria Costa', 'mariana.costa@email.com', 'hash_senha_3', '1995-11-08'),
-('Pedro Alves',   'pedro.alves@email.com',   'hash_senha_4', '1988-01-30');
+('Ana Souza',     'ana.souza@email.com',     'ana123',     '1990-03-15'),
+('Carlos Lima',   'carlos.lima@email.com',   'carlos123',  '1985-07-22'),
+('Mariana Costa', 'mariana.costa@email.com', 'mari123',    '1995-11-08'),
+('Pedro Alves',   'pedro.alves@email.com',   'pedro123',   '1988-01-30');
 
 -- Tipos de Dor
 INSERT INTO TipoDor (Nome, descricao, regiao_corpo) VALUES
