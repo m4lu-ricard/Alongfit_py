@@ -1,8 +1,9 @@
 class HistoricoAlon:
-    def __init__(self, idHisto, alongamento_idAl, usuario_idUsuario, inicio, tempoTotal, dataFim):
+    def __init__(self, idHisto, alongamento_idAl, usuario_idUsuario, tipoDor_idTipoDor, inicio, tempoTotal, dataFim):
         self.idHisto = idHisto
         self.alongamento_idAl = alongamento_idAl
         self.usuario_idUsuario = usuario_idUsuario
+        self.tipoDor_idTipoDor = tipoDor_idTipoDor
         self.inicio = inicio
         self.tempoTotal = tempoTotal
         self.dataFim = dataFim
@@ -34,6 +35,16 @@ class HistoricoAlon:
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do usuário deve ser um número maior que zero.")
         self._usuario_idUsuario = valor
+
+    @property
+    def tipoDor_idTipoDor(self):
+        return self._tipoDor_idTipoDor
+
+    @tipoDor_idTipoDor.setter
+    def tipoDor_idTipoDor(self, valor):
+        if valor is not None and int(valor) <= 0:
+            raise ValueError("O ID da dor deve ser um número maior que zero.")
+        self._tipoDor_idTipoDor = valor
 
     @property
     def inicio(self):

@@ -64,6 +64,7 @@ CREATE TABLE HistoricoAlon (
     idHisto             INTEGER PRIMARY KEY AUTOINCREMENT,
     alongamento_idAl    INTEGER  NOT NULL,
     usuario_idUsuario   INTEGER  NOT NULL,
+    tipoDor_idTipoDor   INTEGER  NOT NULL,
     inicio              DATETIME NOT NULL,
     tempoTotal          INTEGER,
     dataFim             DATETIME,

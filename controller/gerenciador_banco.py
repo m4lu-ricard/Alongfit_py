@@ -1,4 +1,5 @@
 import sqlite3
+from model.Alongamento import Alongamento
 
 class GerenciadorBanco:
     def __init__(self, caminho_banco_dados="alongfit.db"):
@@ -8,7 +9,7 @@ class GerenciadorBanco:
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                SELECT id_usuario, nome 
+                SELECT idUsuario, nome 
                 FROM Usuario 
                 WHERE email = ? AND senha = ?
             """, (email_digitado, senha_digitada))
@@ -23,46 +24,18 @@ class GerenciadorBanco:
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                INSERT INTO Usuario (nome, email, senha, data_nasc)
+                INSERT INTO Usuario (Nome, email, senha, dataNasc)
                 VALUES (?, ?, ?, ?)
-            """, (usuario.nome, usuario.email, usuario.senha, usuario.data_nasc))
+            """, (usuario.nome, usuario.email, usuario.senha, usuario.dataNasc))
             conexao_banco.commit()
-
-    def registrar_dor_usuario(self, dor_usuario):
-        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
-            cursor_banco = conexao_banco.cursor()
-            cursor_banco.execute("""
-                DELETE FROM Usuario_dor WHERE usuario_id = ?
-            """, (dor_usuario.usuario_id,))
-            
-            cursor_banco.execute("""
-                INSERT INTO Usuario_dor (tipo_dor_id, usuario_id)
-                VALUES (?, ?)
-            """, (dor_usuario.tipo_dor_id, dor_usuario.usuario_id))
-            conexao_banco.commit()
-
-    def buscar_dor_registrada_usuario(self, identificador_usuario):
-        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
-            cursor_banco = conexao_banco.cursor()
-            cursor_banco.execute("""
-                SELECT tipo_dor_id 
-                FROM Usuario_dor 
-                WHERE usuario_id = ? 
-                LIMIT 1
-            """, (identificador_usuario,))
-            
-            linha_retornada = cursor_banco.fetchone()
-            if linha_retornada:
-                return linha_retornada[0]
-            return 1
 
     def registrar_inicio_jornada(self, jornada):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                INSERT INTO Jornada_trabalho (inicio_jornada, intervalo_lembrete_min, usuario_id)
+                INSERT INTO JornadaTrabalho (inicioJornd, tempoLembrete, Usuario_idUsuario)
                 VALUES (?, ?, ?)
-            """, (jornada.inicio_jornada, jornada.intervalo_lembrete_min, jornada.usuario_id))
+            """, (jornada.inicioJornd, jornada.tempoLembrete, jornada.usuario_idUsuario))
             conexao_banco.commit()
             return cursor_banco.lastrowid
 
@@ -70,57 +43,58 @@ class GerenciadorBanco:
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                UPDATE Jornada_trabalho 
-                SET fim_jornada = ? 
-                WHERE id_jornada = ?
+                UPDATE JornadaTrabalho 
+                SET fimJornd = ? 
+                WHERE id = ?
             """, (data_hora_fim, id_jornada))
             conexao_banco.commit()
 
-    def buscar_alongamentos_por_dor(self, identificador_tipo_dor):
-        from model.Alongamento import Alongamento
+    def buscar_alongamentos_por_dor(self, identificador_tipo_dor, identificador_usuario):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                SELECT a.id_alongamento, a.nome, a.descricao, a.duracao
+                SELECT a.id, a.nome, a.descricao, a.duracao
                 FROM Alongamento a
-                INNER JOIN Alongamento_tipo_dor r ON a.id_alongamento = r.alongamento_id
-                WHERE r.tipo_dor_id = ?
-            """, (identificador_tipo_dor,))
+                INNER JOIN recomendacao_along r ON a.id = r.alongamento_idAl
+                WHERE r.TipoDor_idTipoDor = ? AND r.Usuario_idUsuario = ?
+            """, (identificador_tipo_dor, identificador_usuario))
             
             linhas_retornadas = cursor_banco.fetchall()
             lista_alongamentos = []
             
             for linha in linhas_retornadas:
                 lista_alongamentos.append(Alongamento(
-                    id_alongamento=linha[0], nome=linha[1], descricao=linha[2], duracao=linha[3]
+                    id=linha[0], nome=linha[1], descricao=linha[2], duracao=linha[3]
                 ))
             return lista_alongamentos
 
     def registrar_pausa_concluida(self, pausa):
+        # Traduz o SIM/NAO do Model para o concluida/ignorada do Banco
+        status_db = 'concluida' if pausa.concluida == 'SIM' else 'ignorada'
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                INSERT INTO Pausas (inicio, fim, status, usuario_id, alongamento_id)
-                VALUES (?, ?, ?, ?, ?)
-            """, (pausa.inicio, pausa.fim, pausa.status, pausa.usuario_id, pausa.alongamento_id))
+                INSERT INTO Pausas (inicio, fim, concluida, Usuario_idUsuario)
+                VALUES (?, ?, ?, ?)
+            """, (pausa.inicio, pausa.fim, status_db, pausa.usuario_idUsuario))
             conexao_banco.commit()
 
     def registrar_historico_alongamento(self, historico):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                INSERT INTO Historico_alongamento (alongamento_id, usuario_id, inicio, tempo_total, data_fim)
-                VALUES (?, ?, ?, ?, ?)
-            """, (historico.alongamento_id, historico.usuario_id, historico.inicio, historico.tempo_total, historico.data_fim))
+                INSERT INTO HistoricoAlon (alongamento_idAl, Usuario_idUsuario, tipoDor_idTipoDor, Inicio, tempoTotal, dataFim)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (historico.alongamento_idAl, historico.usuario_idUsuario, historico.tipoDor_idTipoDor, historico.inicio, historico.tempoTotal, historico.dataFim))
             conexao_banco.commit()
 
     def obter_estatisticas_pausas(self, identificador_usuario):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                SELECT COUNT(*), SUM(CASE WHEN status = 'realizada' THEN 1 ELSE 0 END)
+                SELECT COUNT(*), SUM(CASE WHEN concluida = 'concluida' THEN 1 ELSE 0 END)
                 FROM Pausas
-                WHERE usuario_id = ?
+                WHERE Usuario_idUsuario = ?
             """, (identificador_usuario,))
             
             resultado = cursor_banco.fetchone()
@@ -132,9 +106,9 @@ class GerenciadorBanco:
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
-                SELECT COUNT(*), SUM(tempo_total)
-                FROM Historico_alongamento
-                WHERE usuario_id = ?
+                SELECT COUNT(*), SUM(tempoTotal)
+                FROM HistoricoAlon
+                WHERE Usuario_idUsuario = ?
             """, (identificador_usuario,))
             
             resultado = cursor_banco.fetchone()

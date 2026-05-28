@@ -12,16 +12,18 @@ class SessaoController:
         self.tempo_trabalho_segundos = 0
         self.tempo_pausa_segundos = 0
         self.tempo_restante_segundos = 0
+        self.identificador_dor_selecionada = None
         
         self.temporizador_rodando = False
         self.identificador_processo_temporizador = None
         
         self.funcao_atualizar_texto_relogio = None
 
-    def configurar_sessao(self, horas_trabalho, minutos_pausa):
+    def configurar_sessao(self, horas_trabalho, minutos_pausa, identificador_dor):
         self.tempo_trabalho_segundos = horas_trabalho * 3600
         self.tempo_pausa_segundos = minutos_pausa * 60
         self.tempo_restante_segundos = self.tempo_pausa_segundos
+        self.identificador_dor_selecionada = identificador_dor
 
     def vincular_interface_relogio(self, funcao_atualizacao):
         self.funcao_atualizar_texto_relogio = funcao_atualizacao
@@ -58,9 +60,10 @@ class SessaoController:
             self.funcao_atualizar_texto_relogio(tempo_formatado)
 
     def disparar_alerta_alongamento(self):
-        identificador_dor_usuario = self.banco_dados.buscar_dor_registrada_usuario(self.identificador_usuario_logado)
-        
-        alongamentos_recomendados = self.banco_dados.buscar_alongamentos_por_dor(identificador_dor_usuario)
+        alongamentos_recomendados = self.banco_dados.buscar_alongamentos_por_dor(
+            self.identificador_dor_selecionada, 
+            self.identificador_usuario_logado
+        )
         
         if alongamentos_recomendados:
             alongamento_selecionado = alongamentos_recomendados[0]
@@ -72,21 +75,21 @@ class SessaoController:
             data_hora_fim_formatada = data_hora_fim_pausa.strftime("%Y-%m-%d %H:%M:%S")
 
             nova_pausa = Pausas(
-                id_pausa=None,
-                usuario_id=self.identificador_usuario_logado,
-                alongamento_id=alongamento_selecionado.id_alongamento,
+                idPausas=None,
                 inicio=data_hora_inicio_formatada,
                 fim=data_hora_fim_formatada,
-                status='realizada'
+                concluida='SIM',
+                usuario_idUsuario=self.identificador_usuario_logado
             )
             
             novo_historico = HistoricoAlon(
-                id_historico=None,
-                usuario_id=self.identificador_usuario_logado,
-                alongamento_id=alongamento_selecionado.id_alongamento,
+                idHisto=None,
+                alongamento_idAl=alongamento_selecionado.id,
+                usuario_idUsuario=self.identificador_usuario_logado,
+                tipoDor_idTipoDor=self.identificador_dor_selecionada,
                 inicio=data_hora_inicio_formatada,
-                data_fim=data_hora_fim_formatada,
-                tempo_total=alongamento_selecionado.duracao
+                tempoTotal=alongamento_selecionado.duracao,
+                dataFim=data_hora_fim_formatada
             )
 
             self.banco_dados.registrar_pausa_concluida(nova_pausa)
