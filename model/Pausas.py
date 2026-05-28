@@ -1,10 +1,10 @@
 class Pausas:
-    def __init__(self, idPausas, inicio, fim, concluida, usuario_idUsuario):
+    def __init__(self, idPausas, inicio, fim, concluida, Usuario_idUsuario):
         self.idPausas = idPausas
         self.inicio = inicio
         self.fim = fim
         self.concluida = concluida
-        self.usuario_idUsuario = usuario_idUsuario
+        self.Usuario_idUsuario = Usuario_idUsuario
 
     @property
     def idPausas(self):
@@ -45,11 +45,11 @@ class Pausas:
             raise ValueError("O status de conclusão deve ser 'SIM' ou 'NAO'.")
 
     @property
-    def usuario_idUsuario(self):
-        return self._usuario_idUsuario
+    def Usuario_idUsuario(self):
+        return self._Usuario_idUsuario
 
-    @usuario_idUsuario.setter
-    def usuario_idUsuario(self, valor):
+    @Usuario_idUsuario.setter
+    def Usuario_idUsuario(self, valor):
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do usuário deve ser um número válido.")
-        self._usuario_idUsuario = valor
+        self._Usuario_idUsuario = valor
