@@ -5,7 +5,7 @@ PRAGMA foreign_keys = ON;
 -- =========================
 CREATE TABLE Usuario (
     idUsuario   INTEGER PRIMARY KEY AUTOINCREMENT,
-    Nome        VARCHAR(45)  NOT NULL,
+    nome        VARCHAR(45)  NOT NULL,
     email       VARCHAR(255) NOT NULL UNIQUE,
     senha       VARCHAR(255) NOT NULL,
     dataNasc    DATE         NOT NULL
@@ -16,7 +16,7 @@ CREATE TABLE Usuario (
 -- =========================
 CREATE TABLE TipoDor (
     idTipoDor    INTEGER PRIMARY KEY AUTOINCREMENT,
-    Nome         VARCHAR(45)  NOT NULL,
+    nome         VARCHAR(45)  NOT NULL,
     descricao    VARCHAR(100),
     regiao_corpo VARCHAR(45)
 );
@@ -35,9 +35,9 @@ CREATE TABLE Alongamento (
 -- TABELA recomendacao_along
 -- =========================
 CREATE TABLE recomendacao_along (
-    TipoDor_idTipoDor   INTEGER NOT NULL,
-    Alongamento_idAl    INTEGER NOT NULL,
-    Usuario_idUsuario   INTEGER NOT NULL,
+    tipoDor_idTipoDor   INTEGER NOT NULL,
+    alongamento_idAl    INTEGER NOT NULL,
+    usuario_idUsuario   INTEGER NOT NULL,
     PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario),
     FOREIGN KEY (TipoDor_idTipoDor)
         REFERENCES TipoDor(idTipoDor)
@@ -55,9 +55,9 @@ CREATE TABLE recomendacao_along (
 -- =========================
 CREATE TABLE HistoricoAlon (
     idHisto             INTEGER PRIMARY KEY AUTOINCREMENT,
-    Alongamento_idAl    INTEGER  NOT NULL,
-    Usuario_idUsuario   INTEGER  NOT NULL,
-    Inicio              DATETIME NOT NULL,
+    alongamento_idAl    INTEGER  NOT NULL,
+    usuario_idUsuario   INTEGER  NOT NULL,
+    inicio              DATETIME NOT NULL,
     tempoTotal          INTEGER,
     dataFim             DATETIME,
     FOREIGN KEY (Alongamento_idAl)
