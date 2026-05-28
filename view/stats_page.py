@@ -3,7 +3,7 @@ import tkinter as tk
 
 class StatsPage(tk.Frame):
     def __init__(self, parent):
-        super().__init__(parent, bg="#FFFFFF")
+        super().__init__(parent, bg="#D9D9D9")
 
         tk.Label(
             self,

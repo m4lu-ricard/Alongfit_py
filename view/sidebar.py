@@ -6,7 +6,7 @@ from tkinter import font as tkfont
 #SIDEBAR
 
 # CORES 
-SIDEBAR_BG  = "#D9D9D9"
+SIDEBAR_BG  = "#FFFFFF"
 CARD_BG     = "#FFFFFF"
 TEXT_DARK   = "#1A1A1A"
 BTN_HOVER   = "#C8C8C8"
