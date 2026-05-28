@@ -1,35 +1,35 @@
 class recomendacao_along:
-    def __init__(self, TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario):
-        self.TipoDor_idTipoDor = TipoDor_idTipoDor
-        self.Alongamento_idAl = Alongamento_idAl
-        self.Usuario_idUsuario = Usuario_idUsuario
+    def __init__(self, tipoDor_idTipoDor, alongamento_idAl, usuario_idUsuario):
+        self.tipoDor_idTipoDor = tipoDor_idTipoDor
+        self.alongamento_idAl = alongamento_idAl
+        self.usuario_idUsuario = usuario_idUsuario
 
     @property
-    def TipoDor_idTipoDor(self):
-        return self._TipoDor_idTipoDor
+    def tipoDor_idTipoDor(self):
+        return self._tipoDor_idTipoDor
 
-    @TipoDor_idTipoDor.setter
-    def TipoDor_idTipoDor(self, valor):
+    @tipoDor_idTipoDor.setter
+    def tipoDor_idTipoDor(self, valor):
         if valor is None or (isinstance(valor, int) and valor <= 0):
             raise ValueError("O ID do Tipo de Dor deve ser um número inteiro maior que zero.")
-        self._TipoDor_idTipoDorr = valor
+        self._tipoDor_idTipoDor = valor
 
     @property
-    def Alongamento_idAl(self):
-        return self._Alongamento_idAl
+    def alongamento_idAl(self):
+        return self._alongamento_idAl
 
-    @Alongamento_idAl.setter
-    def Alongamento_idAl(self, valor):
+    @alongamento_idAl.setter
+    def alongamento_idAl(self, valor):
         if valor is None or (isinstance(valor, int) and valor <= 0):
             raise ValueError("O ID do Alongamento deve ser um número inteiro maior que zero.")
-        self._Alongamento_idAl = valor
+        self._alongamento_idAl = valor
 
     @property
-    def Usuario_idUsuario(self):
-        return self._Usuario_idUsuario
+    def usuario_idUsuario(self):
+        return self._usuario_idUsuario
     
-    @Usuario_idUsuario.setter
-    def Usuario_idUsuario(self, valor):
+    @usuario_idUsuario.setter
+    def usuario_idUsuario(self, valor):
         if valor is None or (isinstance(valor, int) and valor <= 0):
             raise ValueError("O ID do Usuario deve ser um número inteiro maior que zero.")
-        self._Usuario_idUsuario = valor
+        self._usuario_idUsuario = valor

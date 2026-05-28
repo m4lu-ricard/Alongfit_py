@@ -11,19 +11,19 @@ class ConfigController:
     def salvar_preferencias_e_iniciar_jornada(self, identificador_dor, horas_trabalho, minutos_pausa):
         try:
             nova_dor = UserDor(
-                tipoDor_idTipoDor=identificador_dor,
-                usuario_idUsuario=self.identificador_usuario_ativo
+                tipo_dor_id=identificador_dor,
+                usuario_id=self.identificador_usuario_ativo
             )
             self.banco_dados.registrar_dor_usuario(nova_dor)
 
             data_hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             nova_jornada = JornadaTrabalho(
-                id=None,
-                inicioJornd=data_hora_atual,
-                tempoLembrete=minutos_pausa,
-                usuario_idUsuario=self.identificador_usuario_ativo,
-                fimJornd=None
+                id_jornada=None,
+                inicio_jornada=data_hora_atual,
+                intervalo_lembrete_min=minutos_pausa,
+                usuario_id=self.identificador_usuario_ativo,
+                fim_jornada=None
             )
             
             id_jornada_criada = self.banco_dados.registrar_inicio_jornada(nova_jornada)

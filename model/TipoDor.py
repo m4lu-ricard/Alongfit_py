@@ -1,7 +1,7 @@
 class TipoDor:
-    def __init__(self, idTipoDor, Nome, descricao, regiao_corpo):
+    def __init__(self, idTipoDor, nome, descricao, regiao_corpo):
         self.idTipoDor = idTipoDor
-        self.Nome = Nome
+        self.nome = nome
         self.descricao = descricao
         self.regiao_corpo = regiao_corpo
 
@@ -14,14 +14,14 @@ class TipoDor:
         self._idTipoDor = valor
 
     @property
-    def Nome(self):
-        return self._Nome
+    def nome(self):
+        return self._nome
 
-    @Nome.setter
-    def Nome(self, valor):
+    @nome.setter
+    def nome(self, valor):
         if not valor or str(valor).strip() == "":
             raise ValueError("O nome do tipo de dor não pode ser vazio.")
-        self._Nome = valor
+        self._nome = valor
 
     @property
     def descricao(self):

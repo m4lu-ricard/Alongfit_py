@@ -72,20 +72,21 @@ class SessaoController:
             data_hora_fim_formatada = data_hora_fim_pausa.strftime("%Y-%m-%d %H:%M:%S")
 
             nova_pausa = Pausas(
-                idPausas=None,
+                id_pausa=None,
+                usuario_id=self.identificador_usuario_logado,
+                alongamento_id=alongamento_selecionado.id_alongamento,
                 inicio=data_hora_inicio_formatada,
                 fim=data_hora_fim_formatada,
-                concluida='SIM',
-                usuario_idUsuario=self.identificador_usuario_logado
+                status='realizada'
             )
             
             novo_historico = HistoricoAlon(
-                idHisto=None,
-                Alongamento_idAI=alongamento_selecionado.id,
-                usuario_idUsuario=self.identificador_usuario_logado,
+                id_historico=None,
+                usuario_id=self.identificador_usuario_logado,
+                alongamento_id=alongamento_selecionado.id_alongamento,
                 inicio=data_hora_inicio_formatada,
-                tempoTotal=alongamento_selecionado.duracao,
-                dataFim=data_hora_fim_formatada
+                data_fim=data_hora_fim_formatada,
+                tempo_total=alongamento_selecionado.duracao
             )
 
             self.banco_dados.registrar_pausa_concluida(nova_pausa)

@@ -1,9 +1,9 @@
 class JornadaTrabalho:
-    def __init__(self, id, inicioJornd, tempoLembrete, Usuario_idUsuario, fimJornd):
+    def __init__(self, id, inicioJornd, tempoLembrete, usuario_idUsuario, fimJornd):
         self.id = id
         self.inicioJornd = inicioJornd
         self.tempoLembrete = tempoLembrete
-        self.Usuario_idUsuario = Usuario_idUsuario
+        self.usuario_idUsuario = usuario_idUsuario
         self.fimJornd = fimJornd
 
     @property
@@ -35,14 +35,14 @@ class JornadaTrabalho:
         self._tempoLembrete = valor
 
     @property
-    def Usuario_idUsuario(self):
-        return self._Usuario_idUsuario
+    def usuario_idUsuario(self):
+        return self._usuario_idUsuario
 
-    @Usuario_idUsuario.setter
-    def Usuario_idUsuario(self, valor):
+    @usuario_idUsuario.setter
+    def usuario_idUsuario(self, valor):
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do usuário deve ser um número maior que zero.")
-        self._Usuario_idUsuario = valor
+        self._usuario_idUsuario = valor
 
     @property
     def fimJornd(self):

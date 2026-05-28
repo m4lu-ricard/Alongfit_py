@@ -1,9 +1,9 @@
 class HistoricoAlon:
-    def __init__(self, idHisto, Alongamento_idAl, Usuario_idUsuario, Inicio, tempoTotal, dataFim):
+    def __init__(self, idHisto, alongamento_idAl, usuario_idUsuario, inicio, tempoTotal, dataFim):
         self.idHisto = idHisto
-        self.Alongamento_idAl = Alongamento_idAl
-        self.Usuario_idUsuario = Usuario_idUsuario
-        self.Inicio = Inicio
+        self.alongamento_idAl = alongamento_idAl
+        self.usuario_idUsuario = usuario_idUsuario
+        self.inicio = inicio
         self.tempoTotal = tempoTotal
         self.dataFim = dataFim
 
@@ -16,34 +16,34 @@ class HistoricoAlon:
         self._idHisto = valor
 
     @property
-    def Alongamento_idAl(self):
-        return self._Alongamento_idAl
+    def alongamento_idAl(self):
+        return self._alongamento_idAl
 
-    @Alongamento_idAl.setter
-    def Alongamento_idAI(self, valor):
+    @alongamento_idAl.setter
+    def alongamento_idAl(self, valor):
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do alongamento deve ser um número maior que zero.")
-        self._Alongamento_idAl = valor
+        self._alongamento_idAl = valor
 
     @property
-    def Usuario_idUsuario(self):
-        return self._Usuario_idUsuario
+    def usuario_idUsuario(self):
+        return self._usuario_idUsuario
 
-    @Usuario_idUsuario.setter
-    def Usuario_idUsuario(self, valor):
+    @usuario_idUsuario.setter
+    def usuario_idUsuario(self, valor):
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do usuário deve ser um número maior que zero.")
-        self._Usuario_idUsuario = valor
+        self._usuario_idUsuario = valor
 
     @property
-    def Inicio(self):
-        return self._Inicio
+    def inicio(self):
+        return self._inicio
 
-    @Inicio.setter
-    def Inicio(self, valor):
+    @inicio.setter
+    def inicio(self, valor):
         if not valor:
             raise ValueError("A data/hora de início é obrigatória.")
-        self._Inicio = valor
+        self._inicio = valor
 
     @property
     def tempoTotal(self):

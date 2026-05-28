@@ -67,10 +67,10 @@ CREATE TABLE HistoricoAlon (
     inicio              DATETIME NOT NULL,
     tempoTotal          INTEGER,
     dataFim             DATETIME,
-    FOREIGN KEY (Alongamento_idAl)
+    FOREIGN KEY (alongamento_idAl)
         REFERENCES Alongamento(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (Usuario_idUsuario)
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -82,9 +82,9 @@ CREATE TABLE JornadaTrabalho (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     inicioJornd       DATETIME NOT NULL,
     tempoLembrete     INTEGER  NOT NULL,
-    Usuario_idUsuario INTEGER  NOT NULL,
+    usuario_idUsuario INTEGER  NOT NULL,
     fimJornd          DATETIME,
-    FOREIGN KEY (Usuario_idUsuario)
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -97,8 +97,8 @@ CREATE TABLE Pausas (
     inicio            DATETIME,
     fim               DATETIME,
     concluida         VARCHAR(20) CHECK(concluida IN ('concluida','ignorada','pendente')),
-    Usuario_idUsuario INTEGER NOT NULL,
-    FOREIGN KEY (Usuario_idUsuario)
+    usuario_idUsuario INTEGER NOT NULL,
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
