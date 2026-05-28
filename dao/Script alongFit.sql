@@ -38,18 +38,25 @@ CREATE TABLE recomendacao_along (
     tipoDor_idTipoDor   INTEGER NOT NULL,
     alongamento_idAl    INTEGER NOT NULL,
     usuario_idUsuario   INTEGER NOT NULL,
-    PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario),
-    FOREIGN KEY (TipoDor_idTipoDor)
+
+    PRIMARY KEY (
+        tipoDor_idTipoDor,
+        alongamento_idAl,
+        usuario_idUsuario
+    ),
+
+    FOREIGN KEY (tipoDor_idTipoDor)
         REFERENCES TipoDor(idTipoDor)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (Alongamento_idAl)
+
+    FOREIGN KEY (alongamento_idAl)
         REFERENCES Alongamento(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (Usuario_idUsuario)
+
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 -- =========================
 -- TABELA HistoricoAlon
 -- =========================
