@@ -1,9 +1,37 @@
 import sqlite3
+import os
 from model.Alongamento import Alongamento
 
 class GerenciadorBanco:
     def __init__(self, caminho_banco_dados="alongfit.db"):
         self.caminho_banco_dados = caminho_banco_dados
+        self._inicializar_banco_se_necessario()
+
+    def _inicializar_banco_se_necessario(self):
+        # Se o arquivo do banco já existir na pasta, o sistema já foi iniciado antes.
+        if os.path.exists(self.caminho_banco_dados):
+            return
+
+        print("Primeiro acesso detectado: Construindo o banco de dados local...")
+        
+        caminho_tabelas = os.path.join('dao', 'Script alongFit.sql')
+        caminho_dados = os.path.join('dao', 'Script_InsertDados.sql')
+        
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            try:
+                # Lê e executa o script que cria as tabelas do sistema
+                with open(caminho_tabelas, 'r', encoding='utf-8') as arquivo_tabelas:
+                    cursor_banco.executescript(arquivo_tabelas.read())
+                    
+                # Lê e executa o script que insere os dados iniciais (como a Ana Souza)
+                with open(caminho_dados, 'r', encoding='utf-8') as arquivo_dados:
+                    cursor_banco.executescript(arquivo_dados.read())
+                    
+                conexao_banco.commit()
+                print("Banco de dados 'alongfit.db' criado com sucesso!")
+            except Exception as erro:
+                print(f"Erro ao tentar criar o banco de dados inicial: {erro}")
 
     def autenticar_usuario(self, email_digitado, senha_digitada):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
