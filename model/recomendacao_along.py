@@ -1,7 +1,8 @@
-class RecomendacaoAlong:
-    def __init__(self, tipoDor_idTipoDor, alongamento_idAl):
+class recomendacao_along:
+    def __init__(self, tipoDor_idTipoDor, alongamento_idAl, usuario_idUsuario):
         self.tipoDor_idTipoDor = tipoDor_idTipoDor
         self.alongamento_idAl = alongamento_idAl
+        self.usuario_idUsuario = usuario_idUsuario
 
     @property
     def tipoDor_idTipoDor(self):
@@ -22,3 +23,13 @@ class RecomendacaoAlong:
         if valor is None or (isinstance(valor, int) and valor <= 0):
             raise ValueError("O ID do Alongamento deve ser um número inteiro maior que zero.")
         self._alongamento_idAl = valor
+
+    @property
+    def usuario_idUsuario(self):
+        return self._usuario_idUsuario
+    
+    @usuario_idUsuario.setter
+    def usuario_idUsuario(self, valor):
+        if valor is None or (isinstance(valor, int) and valor <= 0):
+            raise ValueError("O ID do Usuario deve ser um número inteiro maior que zero.")
+        self._usuario_idUsuario = valor

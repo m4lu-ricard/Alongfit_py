@@ -1,179 +1,104 @@
-CREATE DATABASE AlongFit;
-USE AlongFit;
+PRAGMA foreign_keys = ON;
 
 -- =========================
--- TABELA USUARIO
+-- TABELA Usuario
 -- =========================
-
 CREATE TABLE Usuario (
-    idUsuario INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(45) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    dataNasc DATE NOT NULL
+    idUsuario   INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome        VARCHAR(45)  NOT NULL,
+    email       VARCHAR(255) NOT NULL UNIQUE,
+    senha       VARCHAR(255) NOT NULL,
+    dataNasc    DATE         NOT NULL
 );
 
 -- =========================
--- TABELA TIPO DOR
+-- TABELA TipoDor
 -- =========================
-
 CREATE TABLE TipoDor (
-    idTipoDor INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(45) NOT NULL,
-    descricao VARCHAR(100),
+    idTipoDor    INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome         VARCHAR(45)  NOT NULL,
+    descricao    VARCHAR(100),
     regiao_corpo VARCHAR(45)
 );
 
 -- =========================
--- TABELA ALONGAMENTO
+-- TABELA Alongamento
 -- =========================
-
 CREATE TABLE Alongamento (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(45) NOT NULL,
-    descricao VARCHAR(250),
-    duracao INT NOT NULL
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome     VARCHAR(45) NOT NULL,
+    descricao VARCHAR(45),
+    duracao  INTEGER
 );
 
 -- =========================
--- TABELA USER DOR
+-- TABELA recomendacao_along
 -- =========================
-
-CREATE TABLE UserDor (
-    TipoDor_idTipoDor INT,
-    Usuario_idUsuario INT,
-
-    PRIMARY KEY (TipoDor_idTipoDor, Usuario_idUsuario),
-
-    CONSTRAINT fk_userdor_tipodor
-        FOREIGN KEY (TipoDor_idTipoDor)
-        REFERENCES TipoDor(idTipoDor)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_userdor_usuario
-        FOREIGN KEY (Usuario_idUsuario)
-        REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE
-);
-
--- =========================
--- TABELA RECOMENDACAO ALONG
--- =========================
-
 CREATE TABLE recomendacao_along (
-    TipoDor_idTipoDor INT,
-    Alongamento_idAI INT,
+    tipoDor_idTipoDor   INTEGER NOT NULL,
+    alongamento_idAl    INTEGER NOT NULL,
+    usuario_idUsuario   INTEGER NOT NULL,
 
-    PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAI),
+    PRIMARY KEY (
+        tipoDor_idTipoDor,
+        alongamento_idAl,
+        usuario_idUsuario
+    ),
 
-    CONSTRAINT fk_recomendacao_tipodor
-        FOREIGN KEY (TipoDor_idTipoDor)
+    FOREIGN KEY (tipoDor_idTipoDor)
         REFERENCES TipoDor(idTipoDor)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE ON UPDATE CASCADE,
 
-    CONSTRAINT fk_recomendacao_alongamento
-        FOREIGN KEY (Alongamento_idAI)
+    FOREIGN KEY (alongamento_idAl)
         REFERENCES Alongamento(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+
+    FOREIGN KEY (usuario_idUsuario)
+        REFERENCES Usuario(idUsuario)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 -- =========================
--- TABELA HISTORICO
+-- TABELA HistoricoAlon
 -- =========================
-
 CREATE TABLE HistoricoAlon (
-    idHisto INT AUTO_INCREMENT PRIMARY KEY,
-
-    Alongamento_idAI INT NOT NULL,
-    Usuario_idUsuario INT NOT NULL,
-
-    Inicio DATETIME NOT NULL,
-    tempoTotal INT,
-    dataFim DATETIME,
-
-    CONSTRAINT fk_hist_alongamento
-        FOREIGN KEY (Alongamento_idAI)
+    idHisto             INTEGER PRIMARY KEY AUTOINCREMENT,
+    alongamento_idAl    INTEGER  NOT NULL,
+    usuario_idUsuario   INTEGER  NOT NULL,
+    inicio              DATETIME NOT NULL,
+    tempoTotal          INTEGER,
+    dataFim             DATETIME,
+    FOREIGN KEY (alongamento_idAl)
         REFERENCES Alongamento(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_hist_usuario
-        FOREIGN KEY (Usuario_idUsuario)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- =========================
--- TABELA JORNADA TRABALHO
+-- TABELA JornadaTrabalho
 -- =========================
-
 CREATE TABLE JornadaTrabalho (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    inicioJornd DATETIME NOT NULL,
-    tempoLembrete INT,
-    fimJornd DATETIME,
-
-    Usuario_idUsuario INT NOT NULL,
-
-    CONSTRAINT fk_jornada_usuario
-        FOREIGN KEY (Usuario_idUsuario)
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    inicioJornd       DATETIME NOT NULL,
+    tempoLembrete     INTEGER  NOT NULL,
+    usuario_idUsuario INTEGER  NOT NULL,
+    fimJornd          DATETIME,
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- =========================
--- TABELA PAUSAS
+-- TABELA Pausas
 -- =========================
-
 CREATE TABLE Pausas (
-    idPausas INT AUTO_INCREMENT PRIMARY KEY,
-
-    inicio DATETIME NOT NULL,
-    fim DATETIME,
-    concluida ENUM('SIM','NAO') DEFAULT 'NAO',
-
-    Usuario_idUsuario INT NOT NULL,
-
-    CONSTRAINT fk_pausa_usuario
-        FOREIGN KEY (Usuario_idUsuario)
+    idPausas          INTEGER PRIMARY KEY AUTOINCREMENT,
+    inicio            DATETIME,
+    fim               DATETIME,
+    concluida         VARCHAR(20) CHECK(concluida IN ('concluida','ignorada','pendente')),
+    usuario_idUsuario INTEGER NOT NULL,
+    FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
-
--- =========================
--- INDEX
--- =========================
-
-CREATE INDEX idx_usuarioDor_usuario
-ON UserDor (Usuario_idUsuario);
-
-CREATE INDEX idx_usuarioDor_tipoDor
-ON UserDor (TipoDor_idTipoDor);
-
-CREATE INDEX idx_hist_usuario
-ON HistoricoAlon (Usuario_idUsuario);
-
-CREATE INDEX idx_hist_alongamento
-ON HistoricoAlon (Alongamento_idAI);
-
--- =========================
--- TRIGGER
--- =========================
-
-DELIMITER $$
-
-CREATE TRIGGER trg_calc_tempo
-BEFORE UPDATE ON HistoricoAlon
-FOR EACH ROW
-BEGIN
-
-    SET NEW.tempoTotal =
-    TIMESTAMPDIFF(
-        MINUTE,
-        NEW.Inicio,
-        NEW.dataFim
-    );
-
-END $$
-
-DELIMITER ;

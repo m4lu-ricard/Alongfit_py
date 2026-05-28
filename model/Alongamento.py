@@ -4,9 +4,6 @@ class Alongamento:
         self.nome = nome
         self.descricao = descricao
         self.duracao = duracao
-        
-        self._historicos = []
-        self._recomendacoes = []
 
     @property
     def id(self):

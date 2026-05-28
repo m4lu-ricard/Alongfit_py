@@ -38,11 +38,11 @@ class Pausas:
 
     @concluida.setter
     def concluida(self, valor):
-        opcoes_validas = ['Sim', 'Não']
+        opcoes_validas = ['SIM', 'NAO']
         if valor in opcoes_validas:
             self._concluida = valor
         else:
-            raise ValueError("O status de conclusão deve ser 'Sim' ou 'Não'.")
+            raise ValueError("O status de conclusão deve ser 'SIM' ou 'NAO'.")
 
     @property
     def usuario_idUsuario(self):
@@ -52,4 +52,4 @@ class Pausas:
     def usuario_idUsuario(self, valor):
         if valor is not None and int(valor) <= 0:
             raise ValueError("O ID do usuário deve ser um número válido.")
-        self._usuario_idUsuario = valor
+        self._Usuario_idUsuario = valor

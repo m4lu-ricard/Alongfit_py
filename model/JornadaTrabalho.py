@@ -1,10 +1,10 @@
 class JornadaTrabalho:
-    def __init__(self, id, inicioJornd, tempoLembrete, usuario_idUsuario, fimJond=None):
+    def __init__(self, id, inicioJornd, tempoLembrete, usuario_idUsuario, fimJornd):
         self.id = id
         self.inicioJornd = inicioJornd
         self.tempoLembrete = tempoLembrete
         self.usuario_idUsuario = usuario_idUsuario
-        self.fimJond = fimJond
+        self.fimJornd = fimJornd
 
     @property
     def id(self):
@@ -45,9 +45,9 @@ class JornadaTrabalho:
         self._usuario_idUsuario = valor
 
     @property
-    def fimJond(self):
-        return self._fimJond
+    def fimJornd(self):
+        return self._fimJornd
 
-    @fimJond.setter
-    def fimJond(self, valor):
-        self._fimJond = valor
+    @fimJornd.setter
+    def fimJornd(self, valor):
+        self._fimJornd = valor
