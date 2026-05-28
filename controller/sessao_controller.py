@@ -78,7 +78,7 @@ class SessaoController:
                 idPausas=None,
                 inicio=data_hora_inicio_formatada,
                 fim=data_hora_fim_formatada,
-                concluida='SIM',
+                concluida='concluida', 
                 usuario_idUsuario=self.identificador_usuario_logado
             )
             

@@ -69,14 +69,12 @@ class GerenciadorBanco:
             return lista_alongamentos
 
     def registrar_pausa_concluida(self, pausa):
-        # Traduz o SIM/NAO do Model para o concluida/ignorada do Banco
-        status_db = 'concluida' if pausa.concluida == 'SIM' else 'ignorada'
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             cursor_banco.execute("""
                 INSERT INTO Pausas (inicio, fim, concluida, Usuario_idUsuario)
                 VALUES (?, ?, ?, ?)
-            """, (pausa.inicio, pausa.fim, status_db, pausa.usuario_idUsuario))
+            """, (pausa.inicio, pausa.fim, pausa.concluida, pausa.usuario_idUsuario))
             conexao_banco.commit()
 
     def registrar_historico_alongamento(self, historico):
