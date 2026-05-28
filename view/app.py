@@ -6,8 +6,6 @@ from sidebar import Sidebar
 from stats_page import StatsPage
 from timer_page import TimerPage
 
-#app.py pra rodar o tkinter
-
 PAGES = {
     "home": HomePage,
     "stats": StatsPage,
@@ -15,6 +13,9 @@ PAGES = {
     "config": ConfigPage,
 }
 
+def rodar_app():
+    app = AlongFitApp()
+    app.mainloop()
 
 class AlongFitApp(tk.Tk):
     def __init__(self):
@@ -44,5 +45,14 @@ class AlongFitApp(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = AlongFitApp()
-    app.mainloop()
+    try:
+        import hupper
+
+        # 2. O hupper assume o controle, vigia os arquivos .py 
+        # e reinicia a função 'rodar_app' se algo mudar
+        print("Hot Reload Ativo! Monitorando alterações...")
+        reloader = hupper.start_reloader("app.rodar_app")
+        
+    except ImportError:
+        # Caso o hupper não esteja instalado, o app roda normalmente
+        rodar_app()
