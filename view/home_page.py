@@ -114,6 +114,10 @@ class HomePage(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent, bg=BG_CINZA_ESCURO)
         self.f_titulo = tkfont.Font(family="Helvetica", size=24, weight="bold")
+        
+        # 1. Cria a variável para o campo de texto
+        self.var_input_tarefa = tk.StringVar()
+        
         self._build()
 
     def _build(self):
@@ -135,11 +139,11 @@ class HomePage(tk.Frame):
         self._build_lista_tarefas()
 
     def _build_area_input(self):
-        """Monta a barra superior de adicionar tarefa"""
         frame_topo = tk.Frame(self.contorno, bg=BG_BRANCO)
         frame_topo.pack(pady=20, fill="x", padx=40)
 
-        campo_tarefa = tk.Entry(frame_topo, font=("Helvetica", 14))
+        # 2. Conecta a variável ao Entry
+        campo_tarefa = tk.Entry(frame_topo, textvariable=self.var_input_tarefa, font=("Helvetica", 14))
         campo_tarefa.pack(side="left", ipady=8, padx=(0, 20), fill="x", expand=True)
 
         tk.Button(
@@ -148,14 +152,38 @@ class HomePage(tk.Frame):
             bg=BG_BOTAO_VERDE, 
             font=("Helvetica", 12, "bold"),
             relief="flat", 
-            padx=20, pady=5
+            padx=20, pady=5,
+            command=self._adicionar_nova_tarefa # 3. Função que será chamada
         ).pack(side="right")
 
+    def _adicionar_nova_tarefa(self):
+        """Lê a variável, cria o cartão e limpa o campo"""
+        texto_digitado = self.var_input_tarefa.get()
+        
+        if texto_digitado.strip(): # Se não estiver vazio
+            # Cria o cartão visual na tela
+            CartaoTarefa(self.contorno, nome_tarefa=texto_digitado, tempo_info="⏱ 0h   🔔 Padrão")
+            
+            # Limpa o campo de texto para a próxima
+            self.var_input_tarefa.set("")
+
     def _build_lista_tarefas(self):
-        """Instancia os cartões de tarefa na tela"""
-        
-        # Veja como fica MUITO mais fácil adicionar tarefas agora!
+        """Carrega as tarefas iniciais quando a tela abre"""
+        # Adiciona aquele cartão de exemplo inicial
         CartaoTarefa(self.contorno, nome_tarefa="Fazer atividade X", tempo_info="⏱ 6h   🔔 30mx12")
-        
-        # Se quiser adicionar outra no futuro, é só descomentar a linha abaixo:
-        # CartaoTarefa(self.contorno, nome_tarefa="Reunião de Alinhamento", tempo_info="⏱ 1h   🔔 0m")
+
+
+# ==========================================
+# ÁREA DE TESTE INDIVIDUAL
+# ==========================================
+if __name__ == "__main__":
+    # Isso permite que você rode o home_page.py sozinho para testar!
+    root = tk.Tk()
+    root.title("Teste - Home Page")
+    root.geometry("1000x600")
+    root.configure(bg="#D9D9D9")
+    
+    app = HomePage(root)
+    app.pack(fill="both", expand=True)
+    
+    root.mainloop()

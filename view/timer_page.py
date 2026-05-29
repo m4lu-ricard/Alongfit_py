@@ -26,19 +26,20 @@ WEEK_DAYS = [
 class TimerPage(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent, bg=BG_GERAL)
-
-        # Caminho absoluto da pasta assets
         self.assets_dir = Path(__file__).resolve().parent.parent / "assets"
-        
-        # Dicionário para guardar as imagens e evitar que sumam da tela (Garbage Collector)
         self.icones_dias = {}
-
-        # Fontes padronizadas
+        
         self.f_titulo = tkfont.Font(family="Helvetica", size=24, weight="bold")
         self.f_cartao_titulo = tkfont.Font(family="Helvetica", size=32, weight="bold")
         self.f_cartao_texto = tkfont.Font(family="Helvetica", size=32)
         
-        # Inicia a construção da tela
+        # ==========================================
+        # 1. CRIANDO AS VARIÁVEIS DINÂMICAS
+        # ==========================================
+        self.var_nome_tarefa = tk.StringVar(value="Nenhuma tarefa ativa")
+        self.var_tempo_principal = tk.StringVar(value="00:00")
+        self.var_tempo_pausa = tk.StringVar(value="--:--")
+        
         self._build()
 
     def _build(self):
@@ -80,25 +81,46 @@ class TimerPage(tk.Frame):
         cartao.pack_propagate(False)
 
         tk.Label(cartao, text="Tarefa em Andamento:", bg=BG_CARTAO, fg=COR_TEXTO, font=self.f_cartao_titulo).pack(pady=(40, 0))
-        tk.Label(cartao, text="Trabalho", bg=BG_CARTAO, fg=COR_TEXTO, font=self.f_cartao_texto).pack(pady=(0, 20))
+        
+        # 1. Variável do Nome da Tarefa
+        tk.Label(cartao, textvariable=self.var_nome_tarefa, bg=BG_CARTAO, fg=COR_TEXTO, font=self.f_cartao_texto).pack(pady=(0, 20))
 
-        # Centro do Timer (onde ficaria o círculo verde)
         centro = tk.Frame(cartao, bg=BG_CARTAO)
         centro.pack(expand=True)
         
-        tk.Label(centro, text="24:55", bg=BG_CARTAO, fg=COR_TITULO, font=("Helvetica", 64, "bold")).pack()
+        # 2. Variável do Relógio
+        tk.Label(centro, textvariable=self.var_tempo_principal, bg=BG_CARTAO, fg=COR_TITULO, font=("Helvetica", 64, "bold")).pack()
 
-        # Botões do rodapé
+        # ==========================================
+        # 3. OS BOTÕES VOLTARAM! (Área do Rodapé)
+        # ==========================================
         rodape = tk.Frame(cartao, bg=BG_CARTAO)
-        rodape.pack(side="bottom", fill="x", pady=40)
+        # Empurra o rodapé pro fundo da tela
+        rodape.pack(side="bottom", fill="x", pady=40) 
 
         # Centralizando os botões criando um frame interno
         caixa_botoes = tk.Frame(rodape, bg=BG_CARTAO)
         caixa_botoes.pack(anchor="c")
 
-        tk.Button(caixa_botoes, text="Pausa", bg="#e5e7eb", font=("Helvetica", 16), relief="flat", padx=30, pady=10).pack(side="left", padx=10)
-        tk.Button(caixa_botoes, text="Cancelar", bg="#e5e7eb", font=("Helvetica", 16), relief="flat", padx=30, pady=10).pack(side="left", padx=10)
+        # Botão Pausa
+        tk.Button(
+            caixa_botoes, 
+            text="Pausa", 
+            bg="#e5e7eb", 
+            font=("Helvetica", 16), 
+            relief="flat", 
+            padx=30, pady=10
+        ).pack(side="left", padx=10)
 
+        # Botão Cancelar
+        tk.Button(
+            caixa_botoes, 
+            text="Cancelar", 
+            bg="#e5e7eb", 
+            font=("Helvetica", 16), 
+            relief="flat", 
+            padx=30, pady=10
+        ).pack(side="left", padx=10)
 
     def _build_pausa_programada(self):
         """Constrói o cartão superior da direita (Pausa programada)"""
@@ -111,7 +133,9 @@ class TimerPage(tk.Frame):
         
         centro = tk.Frame(cartao, bg=BG_CARTAO)
         centro.pack(expand=True)
-        tk.Label(centro, text="5:50", bg=BG_CARTAO, fg=COR_TITULO, font=("Helvetica", 48, "bold")).pack()
+        
+        # 4. SUBSTITUINDO O TEMPO DA PAUSA
+        tk.Label(centro, textvariable=self.var_tempo_pausa, bg=BG_CARTAO, fg=COR_TITULO, font=("Helvetica", 48, "bold")).pack()
 
 
     def _build_progresso_semanal(self):
