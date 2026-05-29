@@ -20,11 +20,11 @@ class AuthController:
     def realizar_cadastro(self, nome_digitado, email_digitado, senha_digitada, data_nascimento_digitada):
         try:
             novo_usuario = Usuario(
-                id_usuario=None,
+                idUsuario=None,
                 nome=nome_digitado,
                 email=email_digitado,
                 senha=senha_digitada,
-                data_nasc=data_nascimento_digitada
+                dataNasc=data_nascimento_digitada
             )
             
             self.banco_dados.registrar_usuario(novo_usuario)

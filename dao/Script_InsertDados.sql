@@ -42,13 +42,13 @@ INSERT INTO recomendacao_along (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idU
 (5, 4, 4); 
 
 -- Histórico de Alongamentos
-INSERT INTO HistoricoAlon (Alongamento_idAl, Usuario_idUsuario, Inicio, tempoTotal, dataFim) VALUES
-(1, 1, '2025-05-27 09:00:00', 30, '2025-05-27 09:00:30'),
-(7, 1, '2025-05-27 10:00:00', 30, '2025-05-27 10:00:30'),
-(3, 2, '2025-05-27 10:30:00', 40, '2025-05-27 10:31:10'),
-(5, 3, '2025-05-27 11:00:00', NULL, NULL),
-(8, 4, '2025-05-27 09:30:00', 25, '2025-05-27 09:30:25'),
-(4, 4, '2025-05-27 10:00:00', 30, '2025-05-27 10:00:30');
+INSERT INTO HistoricoAlon (Alongamento_idAl, Usuario_idUsuario, tipoDor_idTipoDor, Inicio, tempoTotal, dataFim) VALUES
+(1, 1, 1, '2025-05-27 09:00:00', 30, '2025-05-27 09:00:30'),
+(7, 1, 1, '2025-05-27 10:00:00', 30, '2025-05-27 10:00:30'),
+(3, 2, 1, '2025-05-27 10:30:00', 40, '2025-05-27 10:31:10'),
+(5, 3, 1, '2025-05-27 11:00:00', NULL, NULL),
+(8, 4, 1, '2025-05-27 09:30:00', 25, '2025-05-27 09:30:25'),
+(4, 4, 1, '2025-05-27 10:00:00', 30, '2025-05-27 10:00:30');
 
 -- Jornadas de Trabalho
 INSERT INTO JornadaTrabalho (inicioJornd, tempoLembrete, Usuario_idUsuario, fimJornd) VALUES
