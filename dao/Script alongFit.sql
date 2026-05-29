@@ -89,6 +89,7 @@ CREATE TABLE HistoricoAlon (
 
     alongamento_idAl      INTEGER NOT NULL,
     usuario_idUsuario     INTEGER NOT NULL,
+    tipoDor_idTipoDor     INTEGER NOT NULL,
 
     inicio                DATETIME NOT NULL,
     dataFim               DATETIME,
@@ -102,6 +103,11 @@ CREATE TABLE HistoricoAlon (
 
     FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (tipoDor_idTipoDor)
+        REFERENCES TipoDor(idTipoDor)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
