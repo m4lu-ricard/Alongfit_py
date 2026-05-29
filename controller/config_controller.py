@@ -52,3 +52,29 @@ class ConfigController:
             return True, "Tarefa salva com sucesso", id_criado
         except Exception as e:
             return False, f"Erro ao salvar: {str(e)}", None
+        
+    def salvar_nova_tarefa(self, nome_tarefa, horas, minutos, id_dor):
+        try:
+            nova_jornada = JornadaTrabalho(
+                id=None,
+                nome=nome_tarefa,
+                tempo=horas,
+                tempoLembrete=minutos,
+                usuario_idUsuario=self.identificador_usuario_ativo,
+                desconforto=id_dor
+            )
+            id_criado = self.banco_dados.registrar_nova_tarefa(nova_jornada)
+            return True, "Tarefa salva com sucesso", id_criado
+        except Exception as e:
+            return False, f"Erro ao salvar: {str(e)}", None
+
+    def atualizar_tarefa_existente(self, id_jornada, horas, minutos, id_dor):
+        self.banco_dados.atualizar_tarefa(id_jornada, horas, minutos, id_dor)
+    
+    def excluir_tarefa(self, id_jornada):
+        """Pede ao banco de dados para excluir uma tarefa específica"""
+        try:
+            self.banco_dados.excluir_tarefa(id_jornada)
+            return True, "Tarefa excluída com sucesso"
+        except Exception as e:
+            return False, f"Erro ao excluir: {str(e)}"

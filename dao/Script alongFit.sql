@@ -37,12 +37,11 @@ CREATE TABLE Alongamento (
 CREATE TABLE recomendacao_along (
     tipoDor_idTipoDor   INTEGER NOT NULL,
     alongamento_idAl    INTEGER NOT NULL,
-    usuario_idUsuario   INTEGER NOT NULL,
 
     PRIMARY KEY (
         tipoDor_idTipoDor,
         alongamento_idAl,
-        usuario_idUsuario
+        
     ),
 
     FOREIGN KEY (tipoDor_idTipoDor)
@@ -52,10 +51,6 @@ CREATE TABLE recomendacao_along (
     FOREIGN KEY (alongamento_idAl)
         REFERENCES Alongamento(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
-
-    FOREIGN KEY (usuario_idUsuario)
-        REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE ON UPDATE CASCADE
 );
 -- =========================
 -- TABELA HistoricoAlon
@@ -81,14 +76,17 @@ CREATE TABLE HistoricoAlon (
 -- =========================
 CREATE TABLE JornadaTrabalho (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome              VARCHAR(100) NOT NULL,    -- <--- ESSA LINHA É A NOVIDADE!
-    inicioJornd       DATETIME,                 -- (Pode tirar o NOT NULL daqui por enquanto, pois só inicia quando clica em Iniciar)
-    tempoLembrete     INTEGER  NOT NULL,
-    usuario_idUsuario INTEGER  NOT NULL,
-    fimJornd          DATETIME,
+    nome              VARCHAR(100) NOT NULL,
+    Tempo             INTEGER NOT NULL, -- Corrigido para INTEGER (para guardar 4, 6, 8)
+    tempoLembrete     INTEGER NOT NULL,
+    usuario_idUsuario INTEGER NOT NULL,
+    desconforto       INTEGER,          -- Corrigido para INTEGER (Chave Estrangeira do ID da Dor)
     FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (desconforto)
+        REFERENCES TipoDor(idTipoDor)
+        ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- =========================

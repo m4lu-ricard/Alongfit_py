@@ -15,32 +15,25 @@ COR_TITULO = "#1A1A1A"
 # ==========================================
 # COMPONENTE: CARTÃO DE TAREFA
 # ==========================================
-# In home_page.py
-
 class CartaoTarefa(tk.Frame):
-    def __init__(self, parent, nome_tarefa, tempo_info, app, jornada_id=None): 
+    def __init__(self, parent, nome_tarefa, horas, minutos, dor, app, jornada_id=None): 
         super().__init__(parent, bg=BG_CINZA_CLARO)
         self.app = app 
         self.nome_tarefa = nome_tarefa
-        
-        # Determine initial values based on tempo_info string or default
-        # (A more robust solution would pass these in directly instead of parsing a string)
-        self.horas_trabalho_iniciais = 6 
-        self.minutos_pausa_iniciais = 30
-        
-        # --- Create unique variables for THIS specific card ---
-        self.var_horas_jornada = tk.IntVar(value=self.horas_trabalho_iniciais)
-        self.var_minutos_lembrete = tk.IntVar(value=self.minutos_pausa_iniciais)
-        self.var_id_dor = tk.IntVar(value=0) # Default to 'Nenhum'
-        
-        # Display text variable
-        self.var_tempo_info = tk.StringVar(value=tempo_info)
-        
-        # Optional: Store an ID if this represents an existing database record
         self.jornada_id = jornada_id
         
+        # 1. Variáveis que guardam o valor REAL aprovado pelo sistema
+        self.var_horas_jornada = tk.IntVar(value=horas)
+        self.var_minutos_lembrete = tk.IntVar(value=minutos)
+        self.var_id_dor = tk.IntVar(value=dor if dor else 0) 
+        
+        # 2. Variáveis de TEXTO apenas para os campos de digitação
+        self.var_input_horas = tk.StringVar(value=str(horas))
+        self.var_input_minutos = tk.StringVar(value=str(minutos))
+        
+        self.var_tempo_info = tk.StringVar(value=f"⏱ {horas}h   🔔 {minutos}m")
+        
         self.pack(fill="x", padx=40, pady=10)
-
         self._build_cabecalho()
         self._build_detalhes()
 
@@ -48,35 +41,15 @@ class CartaoTarefa(tk.Frame):
         cabecalho = tk.Frame(self, bg=BG_CINZA_CLARO, padx=15, pady=10)
         cabecalho.pack(fill="x")
 
-        tk.Button(
-            cabecalho, 
-            text=self.nome_tarefa, 
-            font=("Helvetica", 14, "bold"), 
-            bg=BG_CINZA_CLARO, 
-            relief="flat", 
-            cursor="hand2", 
-            command=self.alternar_detalhes
-        ).pack(side="left")
-
-        # Connect the display label to the dynamic variable
+        tk.Button(cabecalho, text=self.nome_tarefa, font=("Helvetica", 14, "bold"), bg=BG_CINZA_CLARO, relief="flat", cursor="hand2", command=self.alternar_detalhes).pack(side="left")
         tk.Label(cabecalho, textvariable=self.var_tempo_info, bg=BG_CINZA_CLARO, fg="#555555").pack(side="left", padx=20)
-
-        tk.Button(cabecalho, text="excluir", bg="#bcbcbc", relief="flat").pack(side="right", padx=(10, 0))
-        
-        tk.Button(
-            cabecalho, 
-            text="Iniciar", 
-            bg=BG_BOTAO_CINZA, 
-            relief="flat",
-            command=self.acao_iniciar_tarefa
-        ).pack(side="right")
+        tk.Button(cabecalho, text="excluir", bg="#bcbcbc", relief="flat", command=self.acao_excluir_tarefa).pack(side="right", padx=(10, 0))
+        tk.Button(cabecalho, text="Iniciar", bg=BG_BOTAO_CINZA, relief="flat", command=self.acao_iniciar_tarefa).pack(side="right")
 
     def _build_detalhes(self):
         self.detalhes = tk.Frame(self, bg=BG_CINZA_ESCURO, padx=15, pady=15)
-
         coluna_esquerda = tk.Frame(self.detalhes, bg=BG_CINZA_ESCURO)
         coluna_esquerda.pack(side="left", anchor="nw") 
-
         coluna_direita = tk.Frame(self.detalhes, bg=BG_CINZA_ESCURO)
         coluna_direita.pack(side="right", anchor="ne") 
 
@@ -88,31 +61,33 @@ class CartaoTarefa(tk.Frame):
         botoes_jornada = tk.Frame(parent, bg=BG_CINZA_ESCURO)
         botoes_jornada.pack(anchor="w")
 
-        # Create quick-select buttons that update the variable
-        for horas in [4, 6, 8]:
-            tk.Button(botoes_jornada, text=f"{horas}h", bg=BG_BOTAO_CINZA, relief="flat",
-                      command=lambda h=horas: self._atualizar_jornada(h)).pack(side="left", padx=(0 if horas==4 else 5, 5))
-            
-        # The entry field is connected directly to the variable
-        tk.Entry(botoes_jornada, textvariable=self.var_horas_jornada, bg=BG_BOTAO_CINZA, width=4).pack(side="left", padx=5)
+        for h in [4, 6, 8]:
+            tk.Button(botoes_jornada, text=f"{h}h", bg=BG_BOTAO_CINZA, relief="flat", command=lambda h=h: self._atualizar_jornada(h)).pack(side="left", padx=(0 if h==4 else 5, 5))
+        
+        # Campo de Horas Customizado
+        campo_horas = tk.Entry(botoes_jornada, textvariable=self.var_input_horas, bg=BG_BOTAO_CINZA, width=4)
+        campo_horas.pack(side="left", padx=5)
+        campo_horas.bind("<Return>", self._validar_horas_enter) # <- Ouve a tecla Enter
 
         tk.Label(parent, text="🧍 Onde sente desconforto?", bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(15, 5))
         botoes_desconforto = tk.Frame(parent, bg=BG_CINZA_ESCURO)
         botoes_desconforto.pack(anchor="w")
 
-        # Map discomfort types to IDs (assuming your DB has 1=Cervicalgia, 5=Dorsalgia, etc.)
+        # IDs baseados exatamente no seu INSERT no banco de dados!
         opcoes_dor = [
-            ("Ombros", 1), 
-            ("Costas", 5), 
-            ("Mãos", 4), 
-            ("Olhos", 0) # Assumed ID or handle separately
+            ("Pescoço", 1), 
+            ("Lombar", 2), 
+            ("Punho", 3), 
+            ("Mão", 4), 
+            ("Costas", 5)
         ]
         
         for local, id_dor in opcoes_dor:
-            tk.Button(botoes_desconforto, text=local, bg=BG_BOTAO_CINZA, relief="flat",
-                      command=lambda id=id_dor: self._selecionar_dor(id)).pack(side="left", padx=(0 if local=="Ombros" else 5, 5))
+            # O 'if local=="Pescoço"' garante que o primeiro botão não tem margem extra à esquerda
+            tk.Button(botoes_desconforto, text=local, bg=BG_BOTAO_CINZA, relief="flat", 
+                      command=lambda id=id_dor: self._selecionar_dor(id)).pack(side="left", padx=(0 if local=="Pescoço" else 5, 5))
         
-        tk.Button(parent, text="Nenhum", bg=BG_BOTAO_CINZA, relief="flat",
+        tk.Button(parent, text="Nenhum", bg=BG_BOTAO_CINZA, relief="flat", 
                   command=lambda: self._selecionar_dor(0)).pack(anchor="w", pady=(5, 0))
 
     def _montar_lembretes_e_resumo(self, parent):
@@ -121,53 +96,93 @@ class CartaoTarefa(tk.Frame):
         botoes_lembrete.pack(anchor="w") 
 
         for min_val in [25, 30, 50]:
-            tk.Button(botoes_lembrete, text=f"{min_val}m", bg=BG_BOTAO_CINZA, relief="flat",
-                      command=lambda m=min_val: self._atualizar_lembrete(m)).pack(side="left", padx=(0 if min_val==25 else 5, 5))
-                      
-        tk.Entry(botoes_lembrete, textvariable=self.var_minutos_lembrete, bg=BG_BOTAO_CINZA, width=4).pack(side="left", padx=5)
+            tk.Button(botoes_lembrete, text=f"{min_val}m", bg=BG_BOTAO_CINZA, relief="flat", command=lambda m=min_val: self._atualizar_lembrete(m)).pack(side="left", padx=(0 if min_val==25 else 5, 5))
+        
+        # Campo de Minutos Customizado
+        campo_minutos = tk.Entry(botoes_lembrete, textvariable=self.var_input_minutos, bg=BG_BOTAO_CINZA, width=4)
+        campo_minutos.pack(side="left", padx=5)
+        campo_minutos.bind("<Return>", self._validar_minutos_enter) # <- Ouve a tecla Enter
 
         caixa_resumo = tk.Frame(parent, bg=BG_BRANCO, padx=15, pady=15)
         caixa_resumo.pack(anchor="w", fill="x", pady=(20, 0))
 
         tk.Label(caixa_resumo, text="Resumo da sessão", bg=BG_BRANCO, fg="#555555", font=("Helvetica", 10)).pack(anchor="w")
-        
-        # Create dynamic summary labels
         self.lbl_resumo_sessao = tk.Label(caixa_resumo, text="", bg=BG_BRANCO, font=("Helvetica", 12, "bold"))
         self.lbl_resumo_sessao.pack(anchor="w", pady=(2, 5))
-        
         self.lbl_resumo_dor = tk.Label(caixa_resumo, text="", bg=BG_BRANCO, fg=COR_TEXTO, font=("Helvetica", 10))
         self.lbl_resumo_dor.pack(anchor="w")
-        
-        # Initialize summary text
         self._atualizar_textos_resumo()
+
+    # ==========================================
+    # VALIDAÇÕES AO CLICAR NO ENTER
+    # ==========================================
+    def _validar_horas_enter(self, event):
+        try:
+            novo_valor = int(self.var_input_horas.get())
+            if novo_valor < 0:
+                raise ValueError
+            self._atualizar_jornada(novo_valor)
+            self.focus() # Tira o cursor de dentro da caixinha
+        except ValueError:
+            # Se for letra ou negativo, volta pro número anterior que estava salvo
+            self.var_input_horas.set(str(self.var_horas_jornada.get()))
+
+    def _validar_minutos_enter(self, event):
+        try:
+            novo_valor = int(self.var_input_minutos.get())
+            if novo_valor < 0:
+                raise ValueError
+            self._atualizar_lembrete(novo_valor)
+            self.focus()
+        except ValueError:
+            self.var_input_minutos.set(str(self.var_minutos_lembrete.get()))
+
+    # ==========================================
+    # FUNÇÕES DE ATUALIZAÇÃO E SALVAMENTO
+    # ==========================================
+    def _salvar_alteracoes(self):
+        if self.jornada_id: 
+            horas = self.var_horas_jornada.get()
+            minutos = self.var_minutos_lembrete.get()
+            dor = self.var_id_dor.get()
+            self.app.config_controller.atualizar_tarefa_existente(self.jornada_id, horas, minutos, dor)
 
     def _atualizar_jornada(self, horas):
         self.var_horas_jornada.set(horas)
+        self.var_input_horas.set(str(horas)) # Atualiza a caixinha caso clique nos botões (4h, 6h)
         self._atualizar_textos_resumo()
+        self._salvar_alteracoes() 
 
     def _atualizar_lembrete(self, minutos):
         self.var_minutos_lembrete.set(minutos)
+        self.var_input_minutos.set(str(minutos)) # Atualiza a caixinha caso clique nos botões (25m, 30m)
         self._atualizar_textos_resumo()
+        self._salvar_alteracoes() 
         
     def _selecionar_dor(self, id_dor):
         self.var_id_dor.set(id_dor)
         self._atualizar_textos_resumo()
+        self._salvar_alteracoes() 
 
     def _atualizar_textos_resumo(self):
-        """Updates the labels when user changes settings"""
         h = self.var_horas_jornada.get()
         m = self.var_minutos_lembrete.get()
         id_dor = self.var_id_dor.get()
         
-        # Update summary labels
         self.lbl_resumo_sessao.config(text=f"{h}h de jornada · pausa a cada {m} min")
         
-        # Map ID back to name for display
-        nomes_dor = {0: "Nenhum", 1: "Ombros/Pescoço", 4: "Mãos/Punhos", 5: "Costas"}
+        # Dicionário atualizado com os novos IDs e nomes
+        nomes_dor = {
+            0: "Nenhum", 
+            1: "Pescoço", 
+            2: "Lombar", 
+            3: "Punho", 
+            4: "Mão", 
+            5: "Costas"
+        }
         nome_dor = nomes_dor.get(id_dor, "Desconhecido")
         self.lbl_resumo_dor.config(text=f"Foco inicial: {nome_dor}")
         
-        # Update header info
         self.var_tempo_info.set(f"⏱ {h}h   🔔 {m}m")
 
     def alternar_detalhes(self):
@@ -177,21 +192,18 @@ class CartaoTarefa(tk.Frame):
             self.detalhes.pack(fill="x") 
 
     def acao_iniciar_tarefa(self):
-        # Fetch the LIVE values from the variables
+        self._salvar_alteracoes()
         horas_trabalho = self.var_horas_jornada.get()
         minutos_pausa = self.var_minutos_lembrete.get()
         id_dor_selecionada = self.var_id_dor.get()
-        
-        sucesso, msg, id_jornada = self.app.config_controller.salvar_preferencias_e_iniciar_jornada(horas_trabalho, minutos_pausa)
-
-        if sucesso:
-            self.app.sessao_controller.configurar_sessao(horas_trabalho, minutos_pausa, id_dor_selecionada)
-            self.app.show_page("timer")
-            self.app.sessao_controller.iniciar_temporizador()
-            print("Jornada iniciada com sucesso!")
-        else:
-            print(f"Erro ao iniciar: {msg}")
-
+        self.app.sessao_controller.configurar_sessao(horas_trabalho, minutos_pausa, id_dor_selecionada)
+        self.app.show_page("timer")
+        self.app.sessao_controller.iniciar_temporizador()
+    
+    def acao_excluir_tarefa(self):
+        if self.jornada_id:
+            self.app.config_controller.excluir_tarefa(self.jornada_id)
+        self.destroy()
 
 # ==========================================
 # PÁGINA PRINCIPAL (HOME)
@@ -201,52 +213,59 @@ class HomePage(tk.Frame):
         super().__init__(parent, bg=BG_CINZA_ESCURO)
         self.app = app
         self.f_titulo = tkfont.Font(family="Helvetica", size=24, weight="bold")
+        self.var_input_tarefa = tk.StringVar()
         self._build()
 
     def _build(self):
-        tk.Label(
-            self,
-            text="Página inicial - Saúde e Produtividade",
-            bg=BG_CINZA_ESCURO,
-            fg=COR_TITULO,
-            font=self.f_titulo,
-        ).pack(anchor="w", pady=(20, 20))
-
+        tk.Label(self, text="Página inicial - Saúde e Produtividade", bg=BG_CINZA_ESCURO, fg=COR_TITULO, font=self.f_titulo).pack(anchor="w", pady=(20, 20))
         self.contorno = tk.Frame(self, bg=BG_BRANCO, width=1400, height=700)
         self.contorno.pack(anchor="c", expand=True, fill="both") 
         self.contorno.pack_propagate(False) 
 
-        # 1. A barra de Input fica FIXA no topo
         self._build_area_input()
-        
-        # 2. Constrói a engrenagem do Scroll
         self._build_area_scroll()
-        
-        # 3. Adiciona as tarefas iniciais
         self._build_lista_tarefas()
 
     def _build_area_input(self):
-        """Monta a barra superior de adicionar tarefa"""
         frame_topo = tk.Frame(self.contorno, bg=BG_BRANCO)
         frame_topo.pack(pady=20, fill="x", padx=40)
-
-        campo_tarefa = tk.Entry(frame_topo, font=("Helvetica", 14))
+        
+        campo_tarefa = tk.Entry(frame_topo, textvariable=self.var_input_tarefa, font=("Helvetica", 14))
         campo_tarefa.pack(side="left", ipady=8, padx=(0, 20), fill="x", expand=True)
+        tk.Button(frame_topo, text="+ Adicionar", bg=BG_BOTAO_VERDE, font=("Helvetica", 12, "bold"), relief="flat", padx=20, pady=5, command=self._adicionar_nova_tarefa).pack(side="right")
 
-        tk.Button(
-            frame_topo, 
-            text="+ Adicionar", 
-            bg=BG_BOTAO_VERDE, 
-            font=("Helvetica", 12, "bold"),
-            relief="flat", 
-            padx=20, pady=5
-        ).pack(side="right")
+    def _build_area_scroll(self):
+        container_scroll = tk.Frame(self.contorno, bg=BG_BRANCO)
+        container_scroll.pack(fill="both", expand=True, pady=(0, 20))
+        self.canvas = tk.Canvas(container_scroll, bg=BG_BRANCO, highlightthickness=0)
+        self.canvas.pack(side="left", fill="both", expand=True)
+        scrollbar = tk.Scrollbar(container_scroll, orient="vertical", command=self.canvas.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.canvas.configure(yscrollcommand=scrollbar.set)
+        self.area_tarefas = tk.Frame(self.canvas, bg=BG_BRANCO)
+        self.janela_canvas = self.canvas.create_window((0, 0), window=self.area_tarefas, anchor="nw")
+        self.area_tarefas.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
+        self.canvas.bind("<Configure>", lambda e: self.canvas.itemconfig(self.janela_canvas, width=e.width))
+        self.canvas.bind_all("<MouseWheel>", self._ao_rolar_mouse)
+
+    def _ao_rolar_mouse(self, event):
+        altura_das_tarefas = self.area_tarefas.winfo_reqheight()
+        altura_da_tela = self.canvas.winfo_height()
+        if altura_das_tarefas > altura_da_tela:
+            direcao = int(-1 * (event.delta / 120))
+            self.canvas.yview_scroll(direcao, "units")
 
     def _build_lista_tarefas(self):
-        """Instancia os cartões de tarefa na tela"""
-        
-        # Veja como fica MUITO mais fácil adicionar tarefas agora!
-        CartaoTarefa(self.contorno, nome_tarefa="Fazer atividade X", tempo_info="⏱ 6h   🔔 30mx12")
-        
-        # Se quiser adicionar outra no futuro, é só descomentar a linha abaixo:
-        # CartaoTarefa(self.contorno, nome_tarefa="Reunião de Alinhamento", tempo_info="⏱ 1h   🔔 0m")
+        tarefas_salvas = self.app.config_controller.buscar_tarefas_do_usuario()
+        if tarefas_salvas:
+            for t in tarefas_salvas:
+                CartaoTarefa(self.area_tarefas, nome_tarefa=t['nome'], horas=t['horas'], minutos=t['minutos'], dor=t['desconforto'], app=self.app, jornada_id=t['id'])
+
+    def _adicionar_nova_tarefa(self):
+        texto = self.var_input_tarefa.get()
+        if texto.strip():
+            sucesso, msg, id_nova = self.app.config_controller.salvar_nova_tarefa(nome_tarefa=texto, horas=6, minutos=30, id_dor=0)
+            if sucesso:
+                CartaoTarefa(self.area_tarefas, nome_tarefa=texto, horas=6, minutos=30, dor=0, app=self.app, jornada_id=id_nova)
+                self.var_input_tarefa.set("")
+                self.app.after(50, lambda: self.canvas.yview_moveto(1.0))

@@ -1,4 +1,3 @@
-import datetime
 import sqlite3
 import os
 from model.Alongamento import Alongamento
@@ -10,30 +9,94 @@ class GerenciadorBanco:
         self._inicializar_banco_se_necessario()
 
     def _inicializar_banco_se_necessario(self):
+        import os
+        from pathlib import Path
+        
         # Se o arquivo do banco já existir na pasta, o sistema já foi iniciado antes.
         if os.path.exists(self.caminho_banco_dados):
             return
 
         print("Primeiro acesso detectado: Construindo o banco de dados local...")
         
-        caminho_tabelas = os.path.join('dao', 'Script alongFit.sql')
-        caminho_dados = os.path.join('dao', 'Script_InsertDados.sql')
+        pasta_raiz = Path(__file__).resolve().parent.parent
+        caminho_dados = pasta_raiz / 'dao' / 'Script_InsertDados.sql'
         
+        import sqlite3
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             try:
-                # Lê e executa o script que cria as tabelas do sistema
-                with open(caminho_tabelas, 'r', encoding='utf-8') as arquivo_tabelas:
-                    cursor_banco.executescript(arquivo_tabelas.read())
-                    
-                # Lê e executa o script que insere os dados iniciais (como a Ana Souza)
-                with open(caminho_dados, 'r', encoding='utf-8') as arquivo_dados:
-                    cursor_banco.executescript(arquivo_dados.read())
+                # 1. CRIAMOS AS TABELAS DIRETAMENTE AQUI (Garante que não há erros de sintaxe!)
+                cursor_banco.executescript("""
+                    CREATE TABLE IF NOT EXISTS Usuario (
+                        idUsuario INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nome VARCHAR(45) NOT NULL,
+                        email VARCHAR(255) NOT NULL UNIQUE,
+                        senha VARCHAR(255) NOT NULL,
+                        dataNasc DATE NOT NULL
+                    );
+
+                    CREATE TABLE IF NOT EXISTS TipoDor (
+                        idTipoDor INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nome VARCHAR(45) NOT NULL,
+                        descricao VARCHAR(100),
+                        regiao_corpo VARCHAR(45)
+                    );
+
+                    CREATE TABLE IF NOT EXISTS Alongamento (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nome VARCHAR(45) NOT NULL,
+                        descricao VARCHAR(45),
+                        duracao INTEGER
+                    );
+
+                    CREATE TABLE IF NOT EXISTS recomendacao_along (
+                        TipoDor_idTipoDor INTEGER,
+                        Alongamento_idAl INTEGER,
+                        Usuario_idUsuario INTEGER,
+                        PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario)
+                    );
+
+                    CREATE TABLE IF NOT EXISTS HistoricoAlon (
+                        idHisto INTEGER PRIMARY KEY AUTOINCREMENT,
+                        alongamento_idAl INTEGER NOT NULL,
+                        usuario_idUsuario INTEGER NOT NULL,
+                        tipoDor_idTipoDor INTEGER NOT NULL,
+                        inicio DATETIME NOT NULL,
+                        tempoTotal INTEGER,
+                        dataFim DATETIME
+                    );
+
+                    CREATE TABLE IF NOT EXISTS Pausas (
+                        idPausas INTEGER PRIMARY KEY AUTOINCREMENT,
+                        inicio DATETIME,
+                        fim DATETIME,
+                        concluida TEXT,
+                        Usuario_idUsuario INTEGER
+                    );
+
+                    CREATE TABLE IF NOT EXISTS JornadaTrabalho (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        nome TEXT,
+                        Tempo INTEGER,
+                        tempoLembrete INTEGER,
+                        desconforto INTEGER,
+                        Usuario_idUsuario INTEGER,
+                        inicioJornd DATETIME,
+                        fimJornd DATETIME
+                    );
+                """)
+
+                # 2. INSERIMOS OS DADOS DO SEU SCRIPT DE INSERTS
+                if caminho_dados.exists():
+                    with open(caminho_dados, 'r', encoding='utf-8') as arquivo_dados:
+                        cursor_banco.executescript(arquivo_dados.read())
+                else:
+                    print(f"AVISO: Não encontrei o ficheiro {caminho_dados}")
                     
                 conexao_banco.commit()
-                print("Banco de dados 'alongfit.db' criado com sucesso!")
+                print("✅ Banco de dados 'alongfit.db' criado com SUCESSO e sem erros de sintaxe!")
             except Exception as erro:
-                print(f"Erro ao tentar criar o banco de dados inicial: {erro}")
+                print(f"❌ Erro ao tentar criar o banco de dados inicial: {erro}")
 
     def autenticar_usuario(self, email_digitado, senha_digitada):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
@@ -59,28 +122,15 @@ class GerenciadorBanco:
             """, (usuario.nome, usuario.email, usuario.senha, usuario.dataNasc))
             conexao_banco.commit()
 
-    def salvar_preferencias_e_iniciar_jornada(self, horas_trabalho, minutos_pausa):
-        try:
-            data_hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            nova_jornada = JornadaTrabalho(
-                id=None,
-                inicioJornd=data_hora_atual,
-                nome="Tarefa Iniciada Rapidamente", # <--- ADICIONAMOS O NOME AQUI!
-                tempoLembrete=minutos_pausa,
-                usuario_idUsuario=self.identificador_usuario_ativo,
-                fimJornd=None
-            )
-            
-            id_jornada_criada = self.banco_dados.registrar_inicio_jornada(nova_jornada)
-            
-            return True, "Configurações salvas e jornada iniciada com sucesso.", id_jornada_criada
-            
-        except ValueError as erro_validacao:
-            return False, str(erro_validacao), None
-            
-        except Exception as e:
-            return False, f"Erro inesperado ao salvar no banco de dados: {str(e)}", None
+    def registrar_inicio_jornada(self, jornada):
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            cursor_banco.execute("""
+                INSERT INTO JornadaTrabalho (inicioJornd, tempoLembrete, Usuario_idUsuario)
+                VALUES (?, ?, ?)
+            """, (jornada.inicioJornd, jornada.tempoLembrete, jornada.usuario_idUsuario))
+            conexao_banco.commit()
+            return cursor_banco.lastrowid
 
     def registrar_fim_jornada(self, id_jornada, data_hora_fim):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
@@ -156,35 +206,66 @@ class GerenciadorBanco:
             total_alongamentos = resultado[0] if resultado[0] else 0
             tempo_total = resultado[1] if resultado[1] else 0
             return total_alongamentos, tempo_total
+
+    # ==============================================================================
+    # AS FUNÇÕES NOVAS ANEXADAS ABAIXO (Para o App não dar erro nas telas novas)
+    # ==============================================================================
+
     def registrar_nova_tarefa(self, jornada):
-        """Salva a tarefa no banco usando a tabela JornadaTrabalho"""
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
-            # ATENÇÃO: Você precisa garantir que a sua tabela no SQL tem a coluna 'nome'!
             cursor_banco.execute("""
-                INSERT INTO JornadaTrabalho (nome, tempoLembrete, Usuario_idUsuario)
-                VALUES (?, ?, ?)
-            """, (jornada.nome, jornada.tempoLembrete, jornada.usuario_idUsuario))
+                INSERT INTO JornadaTrabalho (nome, Tempo, tempoLembrete, usuario_idUsuario, desconforto)
+                VALUES (?, ?, ?, ?, ?)
+            """, (jornada.nome, jornada.tempo, jornada.tempoLembrete, jornada.usuario_idUsuario, jornada.desconforto))
             conexao_banco.commit()
             return cursor_banco.lastrowid
 
     def buscar_jornadas_por_usuario(self, id_usuario):
-        """Busca todas as tarefas cadastradas pelo usuário"""
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
-            # Busca tarefas que ainda não foram finalizadas
             cursor_banco.execute("""
-                SELECT id, nome, tempoLembrete FROM JornadaTrabalho 
-                WHERE Usuario_idUsuario = ? AND fimJornd IS NULL
+                SELECT id, nome, Tempo, tempoLembrete, desconforto FROM JornadaTrabalho 
+                WHERE Usuario_idUsuario = ?
             """, (id_usuario,))
-            
             linhas = cursor_banco.fetchall()
             tarefas = []
             for linha in linhas:
                 tarefas.append({
                     "id": linha[0],
                     "nome": linha[1],
-                    "horas": 6, # Ajuste se adicionar horas no seu BD
-                    "minutos": linha[2]
+                    "horas": linha[2] if linha[2] is not None else 0,
+                    "minutos": linha[3] if linha[3] is not None else 0,
+                    "desconforto": linha[4] if linha[4] is not None else 0
                 })
             return tarefas
+
+    def atualizar_tarefa(self, id_jornada, horas, minutos, desconforto):
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            cursor_banco.execute("""
+                UPDATE JornadaTrabalho 
+                SET Tempo = ?, tempoLembrete = ?, desconforto = ? 
+                WHERE id = ?
+            """, (horas, minutos, desconforto, id_jornada))
+            conexao_banco.commit()
+            
+    def excluir_tarefa(self, id_jornada):
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            cursor_banco.execute("""
+                DELETE FROM JornadaTrabalho 
+                WHERE id = ?
+            """, (id_jornada,))
+            conexao_banco.commit()
+
+    def obter_dias_semana_com_alongamento(self, identificador_usuario):
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            cursor_banco.execute("""
+                SELECT DISTINCT strftime('%w', inicio) 
+                FROM HistoricoAlon 
+                WHERE usuario_idUsuario = ? AND tempoTotal IS NOT NULL
+            """, (identificador_usuario,))
+            linhas = cursor_banco.fetchall()
+            return [int(linha[0]) for linha in linhas if linha[0] is not None]
