@@ -51,11 +51,11 @@ INSERT INTO HistoricoAlon (Alongamento_idAl, Usuario_idUsuario, tipoDor_idTipoDo
 (4, 4, 1, '2025-05-27 10:00:00', 30, '2025-05-27 10:00:30');
 
 -- Jornadas de Trabalho
-INSERT INTO JornadaTrabalho (inicioJornd, tempoLembrete, Usuario_idUsuario, fimJornd) VALUES
-('2025-05-27 08:00:00', 60, 1, '2025-05-27 17:00:00'),
-('2025-05-27 09:00:00', 45, 2, '2025-05-27 18:00:00'),
-('2025-05-27 07:30:00', 90, 3, '2025-05-27 16:30:00'),
-('2025-05-27 08:00:00', 30, 4, NULL);
+INSERT INTO JornadaTrabalho (nome, inicioJornd, tempoLembrete, Usuario_idUsuario, fimJornd) VALUES
+('Foco Matinal', '2025-05-27 08:00:00', 60, 1, '2025-05-27 17:00:00'),
+('Projeto AlongFit', '2025-05-27 09:00:00', 45, 2, '2025-05-27 18:00:00'),
+('Estudos', '2025-05-27 07:30:00', 90, 3, '2025-05-27 16:30:00'),
+('Trabalho Geral', '2025-05-27 08:00:00', 30, 4, NULL);
 
 -- Pausas
 INSERT INTO Pausas (inicio, fim, concluida, Usuario_idUsuario) VALUES

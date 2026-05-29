@@ -1,7 +1,8 @@
 class JornadaTrabalho:
-    def __init__(self, id, inicioJornd, tempoLembrete, usuario_idUsuario, fimJornd):
+    def __init__(self, id, inicioJornd, nome, tempoLembrete, usuario_idUsuario, fimJornd):
         self.id = id
         self.inicioJornd = inicioJornd
+        self.nome = nome
         self.tempoLembrete = tempoLembrete
         self.usuario_idUsuario = usuario_idUsuario
         self.fimJornd = fimJornd
@@ -20,8 +21,7 @@ class JornadaTrabalho:
 
     @inicioJornd.setter
     def inicioJornd(self, valor):
-        if not valor:
-            raise ValueError("O início da jornada de trabalho é obrigatório.")
+        # Permite que a tarefa nasça sem data de início (pendente)
         self._inicioJornd = valor
 
     @property

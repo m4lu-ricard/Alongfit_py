@@ -1,6 +1,8 @@
+import datetime
 import sqlite3
 import os
 from model.Alongamento import Alongamento
+from model.JornadaTrabalho import JornadaTrabalho
 
 class GerenciadorBanco:
     def __init__(self, caminho_banco_dados="alongfit.db"):
@@ -57,15 +59,28 @@ class GerenciadorBanco:
             """, (usuario.nome, usuario.email, usuario.senha, usuario.dataNasc))
             conexao_banco.commit()
 
-    def registrar_inicio_jornada(self, jornada):
-        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
-            cursor_banco = conexao_banco.cursor()
-            cursor_banco.execute("""
-                INSERT INTO JornadaTrabalho (inicioJornd, tempoLembrete, Usuario_idUsuario)
-                VALUES (?, ?, ?)
-            """, (jornada.inicioJornd, jornada.tempoLembrete, jornada.usuario_idUsuario))
-            conexao_banco.commit()
-            return cursor_banco.lastrowid
+    def salvar_preferencias_e_iniciar_jornada(self, horas_trabalho, minutos_pausa):
+        try:
+            data_hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            nova_jornada = JornadaTrabalho(
+                id=None,
+                inicioJornd=data_hora_atual,
+                nome="Tarefa Iniciada Rapidamente", # <--- ADICIONAMOS O NOME AQUI!
+                tempoLembrete=minutos_pausa,
+                usuario_idUsuario=self.identificador_usuario_ativo,
+                fimJornd=None
+            )
+            
+            id_jornada_criada = self.banco_dados.registrar_inicio_jornada(nova_jornada)
+            
+            return True, "Configurações salvas e jornada iniciada com sucesso.", id_jornada_criada
+            
+        except ValueError as erro_validacao:
+            return False, str(erro_validacao), None
+            
+        except Exception as e:
+            return False, f"Erro inesperado ao salvar no banco de dados: {str(e)}", None
 
     def registrar_fim_jornada(self, id_jornada, data_hora_fim):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
@@ -141,3 +156,35 @@ class GerenciadorBanco:
             total_alongamentos = resultado[0] if resultado[0] else 0
             tempo_total = resultado[1] if resultado[1] else 0
             return total_alongamentos, tempo_total
+    def registrar_nova_tarefa(self, jornada):
+        """Salva a tarefa no banco usando a tabela JornadaTrabalho"""
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            # ATENÇÃO: Você precisa garantir que a sua tabela no SQL tem a coluna 'nome'!
+            cursor_banco.execute("""
+                INSERT INTO JornadaTrabalho (nome, tempoLembrete, Usuario_idUsuario)
+                VALUES (?, ?, ?)
+            """, (jornada.nome, jornada.tempoLembrete, jornada.usuario_idUsuario))
+            conexao_banco.commit()
+            return cursor_banco.lastrowid
+
+    def buscar_jornadas_por_usuario(self, id_usuario):
+        """Busca todas as tarefas cadastradas pelo usuário"""
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            # Busca tarefas que ainda não foram finalizadas
+            cursor_banco.execute("""
+                SELECT id, nome, tempoLembrete FROM JornadaTrabalho 
+                WHERE Usuario_idUsuario = ? AND fimJornd IS NULL
+            """, (id_usuario,))
+            
+            linhas = cursor_banco.fetchall()
+            tarefas = []
+            for linha in linhas:
+                tarefas.append({
+                    "id": linha[0],
+                    "nome": linha[1],
+                    "horas": 6, # Ajuste se adicionar horas no seu BD
+                    "minutos": linha[2]
+                })
+            return tarefas

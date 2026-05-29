@@ -1,4 +1,12 @@
+import sys
+import os
 import tkinter as tk
+
+caminho_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(caminho_raiz)
+
+from controller.config_controller import ConfigController
+from controller.sessao_controller import SessaoController
 
 from config_page import ConfigPage
 from home_page import HomePage
@@ -32,15 +40,28 @@ class AlongFitApp(tk.Tk):
         self.sidebar = Sidebar(self, on_select=self.show_page, active_page="timer")
         self.sidebar.pack(side="left", fill="y")
 
+        # 1. SIMULANDO O USUÁRIO LOGADO (Ana Souza, ID 1)
+        self.id_usuario_logado = 1 
+
+        # 2. INSTANCIANDO OS CONTROLADORES GLOBAIS
+        self.config_controller = ConfigController(self.id_usuario_logado)
+        self.sessao_controller = SessaoController(self, self.id_usuario_logado)
+
+        self.content = tk.Frame(self, bg="#FFFFFF")
+        self.content.pack(side="right", fill="both", expand=True)
+
         self.current_page = None
-        self.show_page("timer")
+        self.show_page("home")
+
+
 
     def show_page(self, page_name):
         if self.current_page is not None:
             self.current_page.destroy()
 
         page_class = PAGES[page_name]
-        self.current_page = page_class(self.content)
+        # MÁGICA: Passamos 'self' (o app) para a página poder usar os controllers!
+        self.current_page = page_class(self.content, app=self) 
         self.current_page.pack(fill="both", expand=True)
 
 

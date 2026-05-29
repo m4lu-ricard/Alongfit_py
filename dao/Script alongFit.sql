@@ -81,7 +81,8 @@ CREATE TABLE HistoricoAlon (
 -- =========================
 CREATE TABLE JornadaTrabalho (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
-    inicioJornd       DATETIME NOT NULL,
+    nome              VARCHAR(100) NOT NULL,    -- <--- ESSA LINHA É A NOVIDADE!
+    inicioJornd       DATETIME,                 -- (Pode tirar o NOT NULL daqui por enquanto, pois só inicia quando clica em Iniciar)
     tempoLembrete     INTEGER  NOT NULL,
     usuario_idUsuario INTEGER  NOT NULL,
     fimJornd          DATETIME,
