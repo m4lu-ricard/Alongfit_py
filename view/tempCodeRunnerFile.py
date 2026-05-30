@@ -8,15 +8,16 @@ sys.path.append(caminho_raiz)
 from controller.config_controller import ConfigController
 from controller.sessao_controller import SessaoController
 
-# ... (suas outras importações)
-from alongamento_page import AlongamentoPage  # Importe a página nova aqui
+from alongamento_page import AlongamentoPage
 from config_page import ConfigPage
 from home_page import HomePage
 from sidebar import Sidebar
 from stats_page import StatsPage
 from timer_page import TimerPage
+from LoginPage import LoginPage  # <--- IMPORTAÇÃO DA NOVA TELA AQUI
 
 PAGES = {
+    "login": LoginPage,         # <--- MAPEAMENTO DA TELA DE LOGIN
     "home": HomePage,
     "stats": StatsPage,
     "timer": TimerPage,
@@ -24,9 +25,14 @@ PAGES = {
     "alongamento": AlongamentoPage,
 }
 
+# Páginas que recebem `app=self`
+PAGES_COM_APP = {"login", "home", "timer", "alongamento", "config", "stats"}
+
+
 def rodar_app():
     app = AlongFitApp()
     app.mainloop()
+
 
 class AlongFitApp(tk.Tk):
     def __init__(self):
@@ -37,51 +43,92 @@ class AlongFitApp(tk.Tk):
         self.minsize(500, 350)
         self.configure(bg="#FFFFFF")
 
-        self.content = tk.Frame(self, bg="#FFFFFF")
-        self.content.pack(side="right", fill="both", expand=True)
+        # ── Configurações globais de UI (persistem entre páginas) ──────────
+        self.config_tema_escuro     = False
+        self.config_sons            = True
+        self.config_hidratacao      = False
+        self.config_frequencia_agua = "A cada 1 hora"
 
-        self.sidebar = Sidebar(self, on_select=self.show_page, active_page="timer")
-        self.sidebar.pack(side="left", fill="y")
+        # ── Estado de Autenticação Inicial ──────────────────────────────────
+        self.id_usuario_logado = None  # Começa vazio (Deslogado)
 
-        # 1. SIMULANDO O USUÁRIO LOGADO (Ana Souza, ID 1)
-        self.id_usuario_logado = 1 
+        # controladores globais iniciam como None e nascem pós-login
+        self.config_controller = None
+        self.sessao_controller = None
 
-        # 2. INSTANCIANDO OS CONTROLADORES GLOBAIS
-        self.config_controller = ConfigController(self.id_usuario_logado)
-        self.sessao_controller = SessaoController(self, self.id_usuario_logado)
+        # ── Inicializa a Sidebar (Mas NÃO empacota ainda para ficar oculta) ──
+        self.sidebar = Sidebar(self, on_select=self.show_page, active_page="home")
 
+        # ── Área de conteúdo expansiva ──────────────────────────────────────
         self.content = tk.Frame(self, bg="#FFFFFF")
         self.content.pack(side="right", fill="both", expand=True)
 
         self.current_page = None
+        
+        # Força o aplicativo a abrir direto na tela de Login!
+        self.show_page("login")
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # GATILHO MÁGICO PÓS-AUTENTICAÇÃO
+    # Chamado pela LoginPage passando o ID real do Banco de Dados
+    # ═══════════════════════════════════════════════════════════════════════
+    def inicializar_sistema_pos_login(self, id_usuario):
+        """Monta a estrutura real do app baseada no Usuário Autenticado"""
+        self.id_usuario_logado = id_usuario
+        
+        # Acorda os controladores reais associados ao ID correto
+        self.config_controller = ConfigController(self.id_usuario_logado)
+        self.sessao_controller = SessaoController(self, self.id_usuario_logado)
+        
+        # Reorganiza o layout para injetar a Sidebar à esquerda de forma fixa
+        self.content.pack_forget()
+        self.sidebar.pack(side="left", fill="y")
+        self.content.pack(side="right", fill="both", expand=True)
+        
+        # Redireciona o fluxo do usuário para a Home do AlongFit
         self.show_page("home")
 
-
-
+    # ═══════════════════════════════════════════════════════════════════════
+    # NAVEGAÇÃO
+    # ═══════════════════════════════════════════════════════════════════════
     def show_page(self, page_name):
         if self.current_page is not None:
             self.current_page.destroy()
 
         page_class = PAGES[page_name]
-        
-        # Adicione o "alongamento" nesta lista:
-        if page_name in ["home", "timer", "alongamento"]:
-            self.current_page = page_class(self.content, app=self)
-        else:
-            self.current_page = page_class(self.content)
-            
+        self.current_page = page_class(self.content, app=self)
         self.current_page.pack(fill="both", expand=True)
+
+        # Aplica o tema logo após criar a página
+        self.aplicar_tema_global()
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # TEMA GLOBAL
+    # ═══════════════════════════════════════════════════════════════════════
+    def aplicar_tema_global(self):
+        escuro = self.config_tema_escuro
+
+        cor_raiz    = "#1E1E1E" if escuro else "#FFFFFF"
+        cor_sidebar = "#2D2D2D" if escuro else "#FFFFFF"
+        cor_content = "#1E1E1E" if escuro else "#FFFFFF"
+
+        # Janela raiz e container de conteúdo
+        self.configure(bg=cor_raiz)
+        self.content.configure(bg=cor_content)
+
+        # Sidebar
+        if hasattr(self.sidebar, 'aplicar_tema'):
+            self.sidebar.aplicar_tema(escuro)
+
+        # Página atual (se ela souber se tematizar)
+        if self.current_page and hasattr(self.current_page, 'aplicar_tema'):
+            self.current_page.aplicar_tema(escuro)
 
 
 if __name__ == "__main__":
     try:
         import hupper
-
-        # 2. O hupper assume o controle, vigia os arquivos .py 
-        # e reinicia a função 'rodar_app' se algo mudar
         print("Hot Reload Ativo! Monitorando alterações...")
         reloader = hupper.start_reloader("app.rodar_app")
-        
     except ImportError:
-        # Caso o hupper não esteja instalado, o app roda normalmente
         rodar_app()
