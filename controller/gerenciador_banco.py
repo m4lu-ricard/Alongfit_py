@@ -119,25 +119,6 @@ class GerenciadorBanco:
             """, (usuario.nome, usuario.email, usuario.senha, usuario.dataNasc))
             conexao_banco.commit()
 
-    def registrar_inicio_jornada(self, jornada):
-        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
-            cursor_banco = conexao_banco.cursor()
-            cursor_banco.execute("""
-                INSERT INTO JornadaTrabalho (inicioJornd, tempoLembrete, Usuario_idUsuario)
-                VALUES (?, ?, ?)
-            """, (jornada.inicioJornd, jornada.tempoLembrete, jornada.usuario_idUsuario))
-            conexao_banco.commit()
-            return cursor_banco.lastrowid
-
-    def registrar_fim_jornada(self, id_jornada, data_hora_fim):
-        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
-            cursor_banco = conexao_banco.cursor()
-            cursor_banco.execute("""
-                UPDATE JornadaTrabalho 
-                SET fimJornd = ? 
-                WHERE id = ?
-            """, (data_hora_fim, id_jornada))
-            conexao_banco.commit()
 
     def buscar_alongamentos_por_dor(self, identificador_tipo_dor, identificador_usuario):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:

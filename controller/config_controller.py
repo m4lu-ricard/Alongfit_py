@@ -7,47 +7,8 @@ class ConfigController:
         self.banco_dados = GerenciadorBanco()
         self.identificador_usuario_ativo = identificador_usuario_ativo
 
-    def salvar_preferencias_e_iniciar_jornada(self, horas_trabalho, minutos_pausa):
-        try:
-            data_hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            nova_jornada = JornadaTrabalho(
-                id=None,
-                inicioJornd=data_hora_atual,
-                tempoLembrete=minutos_pausa,
-                usuario_idUsuario=self.identificador_usuario_ativo,
-                fimJornd=None
-            )
-            
-            id_jornada_criada = self.banco_dados.registrar_inicio_jornada(nova_jornada)
-            
-            return True, "Configurações salvas e jornada iniciada com sucesso.", id_jornada_criada
-            
-        except ValueError as erro_validacao:
-            return False, str(erro_validacao), None
-            
-        except Exception:
-            return False, "Erro inesperado ao salvar no banco de dados.", None
-        
     def buscar_tarefas_do_usuario(self):
         return self.banco_dados.buscar_jornadas_por_usuario(self.identificador_usuario_ativo)
-
-    def salvar_nova_tarefa(self, nome_tarefa, horas, minutos):
-        try:
-            nova_jornada = JornadaTrabalho(
-                id=None,
-                inicioJornd=None,
-                nome=nome_tarefa,
-                tempoLembrete=minutos,
-                usuario_idUsuario=self.identificador_usuario_ativo,
-                fimJornd=None
-            )
-            
-            id_criado = self.banco_dados.registrar_nova_tarefa(nova_jornada)
-            
-            return True, "Tarefa salva com sucesso", id_criado
-        except Exception as e:
-            return False, f"Erro ao salvar: {str(e)}", None
         
     def salvar_nova_tarefa(self, nome_tarefa, horas, minutos, id_dor):
         try:
