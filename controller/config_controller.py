@@ -30,23 +30,19 @@ class ConfigController:
             return False, "Erro inesperado ao salvar no banco de dados.", None
         
     def buscar_tarefas_do_usuario(self):
-        """Pede ao banco de dados todas as tarefas/jornadas pendentes deste usuário"""
         return self.banco_dados.buscar_jornadas_por_usuario(self.identificador_usuario_ativo)
 
     def salvar_nova_tarefa(self, nome_tarefa, horas, minutos):
-        """Salva uma tarefa nova como 'Pendente' (sem data de início ainda)"""
         try:
-            # Aqui estamos a criar a jornada, mas sem iniciar o tempo ainda
             nova_jornada = JornadaTrabalho(
                 id=None,
-                inicioJornd=None, # Só vai preencher quando clicar em "Iniciar"
+                inicioJornd=None,
                 nome=nome_tarefa,
                 tempoLembrete=minutos,
                 usuario_idUsuario=self.identificador_usuario_ativo,
                 fimJornd=None
             )
             
-            # Adicione 'horas_trabalho' no modelo Jornada se quiser salvar no BD também!
             id_criado = self.banco_dados.registrar_nova_tarefa(nova_jornada)
             
             return True, "Tarefa salva com sucesso", id_criado
@@ -72,7 +68,6 @@ class ConfigController:
         self.banco_dados.atualizar_tarefa(id_jornada, horas, minutos, id_dor)
     
     def excluir_tarefa(self, id_jornada):
-        """Pede ao banco de dados para excluir uma tarefa específica"""
         try:
             self.banco_dados.excluir_tarefa(id_jornada)
             return True, "Tarefa excluída com sucesso"

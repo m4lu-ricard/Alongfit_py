@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import font as tkfont
 
-# ── Paleta padrão (modo claro) ─────────────────────────────────────────────
 BG_BRANCO       = "white"
 BG_CINZA_CLARO  = "#f0f0f0"
 BG_CINZA_ESCURO = "#D9D9D9"
@@ -11,9 +10,6 @@ COR_TEXTO       = "#444444"
 COR_TITULO      = "#1A1A1A"
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# CARTÃO DE TAREFA
-# ═══════════════════════════════════════════════════════════════════════════
 class CartaoTarefa(tk.Frame):
     def __init__(self, parent, nome_tarefa, horas, minutos, dor, app, jornada_id=None):
         super().__init__(parent, bg=BG_CINZA_CLARO)
@@ -28,25 +24,31 @@ class CartaoTarefa(tk.Frame):
         self.var_input_minutos    = tk.StringVar(value=str(minutos))
         self.var_tempo_info       = tk.StringVar(value=f"⏱ {horas}h   🔔 {minutos}m")
 
-        self.pack(fill="x", padx=40, pady=10)
+        self.pack(fill="x", padx=40, pady=15)
         self._build_cabecalho()
         self._build_detalhes()
 
     def _build_cabecalho(self):
-        cab = tk.Frame(self, bg=BG_CINZA_CLARO, padx=15, pady=10)
+        cab = tk.Frame(self, bg=BG_CINZA_CLARO, padx=20, pady=15)
         cab.pack(fill="x")
-        tk.Button(cab, text=self.nome_tarefa, font=("Helvetica", 14, "bold"),
-                  bg=BG_CINZA_CLARO, relief="flat", cursor="hand2",
+        
+        tk.Button(cab, text=self.nome_tarefa, font=("Helvetica", 18, "bold"),
+                  bg=BG_CINZA_CLARO, fg=COR_TITULO, relief="flat", cursor="hand2",
                   command=self.alternar_detalhes).pack(side="left")
-        tk.Label(cab, textvariable=self.var_tempo_info,
-                 bg=BG_CINZA_CLARO, fg="#555555").pack(side="left", padx=20)
-        tk.Button(cab, text="excluir", bg="#bcbcbc", relief="flat",
-                  command=self.acao_excluir_tarefa).pack(side="right", padx=(10, 0))
-        tk.Button(cab, text="Iniciar", bg=BG_BOTAO_CINZA, relief="flat",
+        
+        tk.Label(cab, textvariable=self.var_tempo_info, font=("Helvetica", 14),
+                 bg=BG_CINZA_CLARO, fg="#555555").pack(side="left", padx=30)
+                 
+        tk.Button(cab, text="Excluir", bg="#bcbcbc", fg=COR_TITULO, font=("Helvetica", 13, "bold"), 
+                  relief="flat", cursor="hand2", padx=20, pady=8,
+                  command=self.acao_excluir_tarefa).pack(side="right", padx=(15, 0))
+                  
+        tk.Button(cab, text="Iniciar", bg=BG_BOTAO_VERDE, fg=COR_TITULO, font=("Helvetica", 13, "bold"), 
+                  relief="flat", cursor="hand2", padx=25, pady=8,
                   command=self.acao_iniciar_tarefa).pack(side="right")
 
     def _build_detalhes(self):
-        self.detalhes = tk.Frame(self, bg=BG_CINZA_ESCURO, padx=15, pady=15)
+        self.detalhes = tk.Frame(self, bg=BG_CINZA_ESCURO, padx=25, pady=25)
         col_esq = tk.Frame(self.detalhes, bg=BG_CINZA_ESCURO)
         col_esq.pack(side="left", anchor="nw")
         col_dir = tk.Frame(self.detalhes, bg=BG_CINZA_ESCURO)
@@ -55,52 +57,64 @@ class CartaoTarefa(tk.Frame):
         self._montar_lembretes_e_resumo(col_dir)
 
     def _montar_jornada_e_desconforto(self, parent):
-        tk.Label(parent, text="🕒 Jornada de trabalho",
-                 bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(0, 5))
+        fonte_titulos = ("Helvetica", 14, "bold")
+        fonte_botoes = ("Helvetica", 13)
+        
+        tk.Label(parent, text="🕒 Jornada de trabalho", font=fonte_titulos, fg=COR_TITULO,
+                 bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(0, 10))
+                 
         frame_h = tk.Frame(parent, bg=BG_CINZA_ESCURO)
         frame_h.pack(anchor="w")
         for h in [4, 6, 8]:
-            tk.Button(frame_h, text=f"{h}h", bg=BG_BOTAO_CINZA, relief="flat",
-                      command=lambda h=h: self._atualizar_jornada(h)).pack(side="left", padx=(0 if h == 4 else 5, 5))
-        campo_h = tk.Entry(frame_h, textvariable=self.var_input_horas,
-                           bg=BG_BOTAO_CINZA, width=4)
-        campo_h.pack(side="left", padx=5)
+            tk.Button(frame_h, text=f"{h}h", bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                      padx=15, pady=5, command=lambda h=h: self._atualizar_jornada(h)).pack(side="left", padx=(0 if h == 4 else 8, 8))
+                      
+        campo_h = tk.Entry(frame_h, textvariable=self.var_input_horas, font=("Helvetica", 14),
+                           bg=BG_BRANCO, width=5, justify="center")
+        campo_h.pack(side="left", padx=8, ipady=6)
         campo_h.bind("<Return>", self._validar_horas_enter)
 
-        tk.Label(parent, text="🧍 Onde sente desconforto?",
-                 bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(15, 5))
+        tk.Label(parent, text="🧍 Onde sente desconforto?", font=fonte_titulos, fg=COR_TITULO,
+                 bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(25, 10))
+                 
         frame_d = tk.Frame(parent, bg=BG_CINZA_ESCURO)
         frame_d.pack(anchor="w")
         for local, id_dor in [("Pescoço", 1), ("Lombar", 2), ("Punho", 3), ("Mão", 4), ("Costas", 5)]:
-            tk.Button(frame_d, text=local, bg=BG_BOTAO_CINZA, relief="flat",
-                      command=lambda id=id_dor: self._selecionar_dor(id)).pack(
-                          side="left", padx=(0 if local == "Pescoço" else 5, 5))
-        tk.Button(parent, text="Nenhum", bg=BG_BOTAO_CINZA, relief="flat",
-                  command=lambda: self._selecionar_dor(0)).pack(anchor="w", pady=(5, 0))
+            tk.Button(frame_d, text=local, bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                      padx=12, pady=5, command=lambda id=id_dor: self._selecionar_dor(id)).pack(
+                          side="left", padx=(0 if local == "Pescoço" else 6, 6))
+                          
+        tk.Button(parent, text="Nenhum", bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                  padx=20, pady=5, command=lambda: self._selecionar_dor(0)).pack(anchor="w", pady=(10, 0))
 
     def _montar_lembretes_e_resumo(self, parent):
-        tk.Label(parent, text="🔔 Lembrar a cada",
-                 bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(0, 5))
+        fonte_titulos = ("Helvetica", 14, "bold")
+        fonte_botoes = ("Helvetica", 13)
+        
+        tk.Label(parent, text="🔔 Lembrar a cada", font=fonte_titulos, fg=COR_TITULO,
+                 bg=BG_CINZA_ESCURO).pack(anchor="w", pady=(0, 10))
+                 
         frame_m = tk.Frame(parent, bg=BG_CINZA_ESCURO)
         frame_m.pack(anchor="w")
         for m in [25, 30, 50]:
-            tk.Button(frame_m, text=f"{m}m", bg=BG_BOTAO_CINZA, relief="flat",
-                      command=lambda m=m: self._atualizar_lembrete(m)).pack(
-                          side="left", padx=(0 if m == 25 else 5, 5))
-        campo_m = tk.Entry(frame_m, textvariable=self.var_input_minutos,
-                           bg=BG_BOTAO_CINZA, width=4)
-        campo_m.pack(side="left", padx=5)
+            tk.Button(frame_m, text=f"{m}m", bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                      padx=15, pady=5, command=lambda m=m: self._atualizar_lembrete(m)).pack(
+                          side="left", padx=(0 if m == 25 else 8, 8))
+                          
+        campo_m = tk.Entry(frame_m, textvariable=self.var_input_minutos, font=("Helvetica", 14),
+                           bg=BG_BRANCO, width=5, justify="center")
+        campo_m.pack(side="left", padx=8, ipady=6)
         campo_m.bind("<Return>", self._validar_minutos_enter)
 
-        caixa = tk.Frame(parent, bg=BG_BRANCO, padx=15, pady=15)
-        caixa.pack(anchor="w", fill="x", pady=(20, 0))
+        caixa = tk.Frame(parent, bg=BG_BRANCO, padx=20, pady=20)
+        caixa.pack(anchor="w", fill="x", pady=(30, 0))
         tk.Label(caixa, text="Resumo da sessão", bg=BG_BRANCO,
-                 fg="#555555", font=("Helvetica", 10)).pack(anchor="w")
-        self.lbl_resumo_sessao = tk.Label(caixa, text="", bg=BG_BRANCO,
-                                          font=("Helvetica", 12, "bold"))
-        self.lbl_resumo_sessao.pack(anchor="w", pady=(2, 5))
+                 fg="#555555", font=("Helvetica", 12)).pack(anchor="w")
+        self.lbl_resumo_sessao = tk.Label(caixa, text="", bg=BG_BRANCO, fg=COR_TITULO,
+                                          font=("Helvetica", 16, "bold"))
+        self.lbl_resumo_sessao.pack(anchor="w", pady=(5, 8))
         self.lbl_resumo_dor = tk.Label(caixa, text="", bg=BG_BRANCO,
-                                       fg=COR_TEXTO, font=("Helvetica", 10))
+                                       fg=COR_TEXTO, font=("Helvetica", 13))
         self.lbl_resumo_dor.pack(anchor="w")
         self._atualizar_textos_resumo()
 
@@ -175,22 +189,26 @@ class CartaoTarefa(tk.Frame):
         self.app.sessao_controller.iniciar_temporizador()
 
     def acao_excluir_tarefa(self):
-        if self.jornada_id:
+        if self.jornada_id and self.app:
             self.app.config_controller.excluir_tarefa(self.jornada_id)
+
+        if self.app and self.app.sessao_controller:
+            self.app.sessao_controller.pausar_temporizador()
+            self.app.sessao_controller.tempo_restante_segundos = 0
+            self.app.sessao_controller.tempo_trabalho_total_restante = 0
+            self.app.sessao_controller.atualizar_interface_relogio()
+            
         self.destroy()
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# HOME PAGE
-# ═══════════════════════════════════════════════════════════════════════════
+
 class HomePage(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent, bg=BG_CINZA_ESCURO)
         self.app = app
-        self.f_titulo = tkfont.Font(family="Helvetica", size=24, weight="bold")
+        self.f_titulo = tkfont.Font(family="Helvetica", size=32, weight="bold")
         self.var_input_tarefa = tk.StringVar()
         self._build()
-        # Aplica o tema salvo ao abrir a página
         if hasattr(self.app, 'config_tema_escuro'):
             self.aplicar_tema(self.app.config_tema_escuro)
 
@@ -199,7 +217,7 @@ class HomePage(tk.Frame):
             self, text="Página inicial - Saúde e Produtividade",
             bg=BG_CINZA_ESCURO, fg=COR_TITULO, font=self.f_titulo
         )
-        self.lbl_titulo.pack(anchor="w", pady=(20, 20))
+        self.lbl_titulo.pack(anchor="w", pady=(30, 20), padx=40)
 
         self.contorno = tk.Frame(self, bg=BG_BRANCO, width=1400, height=700)
         self.contorno.pack(anchor="c", expand=True, fill="both")
@@ -211,15 +229,15 @@ class HomePage(tk.Frame):
 
     def _build_area_input(self):
         self.frame_topo = tk.Frame(self.contorno, bg=BG_BRANCO)
-        self.frame_topo.pack(pady=20, fill="x", padx=40)
+        self.frame_topo.pack(pady=30, fill="x", padx=60)
         self.campo_tarefa = tk.Entry(
             self.frame_topo, textvariable=self.var_input_tarefa,
-            font=("Helvetica", 14)
+            font=("Helvetica", 16), highlightthickness=1, highlightbackground="#CCCCCC"
         )
-        self.campo_tarefa.pack(side="left", ipady=8, padx=(0, 20), fill="x", expand=True)
+        self.campo_tarefa.pack(side="left", ipady=12, padx=(0, 20), fill="x", expand=True)
         self.btn_adicionar = tk.Button(
-            self.frame_topo, text="+ Adicionar", bg=BG_BOTAO_VERDE,
-            font=("Helvetica", 12, "bold"), relief="flat", padx=20, pady=5,
+            self.frame_topo, text="+ Adicionar", bg=BG_BOTAO_VERDE, fg=COR_TITULO,
+            font=("Helvetica", 14, "bold"), relief="flat", cursor="hand2", padx=25, pady=8,
             command=self._adicionar_nova_tarefa
         )
         self.btn_adicionar.pack(side="right")
@@ -276,7 +294,7 @@ class HomePage(tk.Frame):
                 self.var_input_tarefa.set("")
                 self.app.after(50, lambda: self.canvas.yview_moveto(1.0))
 
-    # ── TEMA ──────────────────────────────────────────────────────────────
+
     def aplicar_tema(self, escuro: bool):
         cor_fundo  = "#1E1E1E" if escuro else BG_CINZA_ESCURO
         cor_cartao = "#2D2D2D" if escuro else BG_BRANCO
@@ -290,6 +308,8 @@ class HomePage(tk.Frame):
         self.frame_topo.configure(bg=cor_cartao)
         self.campo_tarefa.configure(bg=cor_campo, fg=cor_campo_fg,
                                     insertbackground=cor_campo_fg)
+        
         self.btn_adicionar.configure(bg=BG_BOTAO_VERDE)
+        
         self.canvas.configure(bg=cor_cartao)
         self.area_tarefas.configure(bg=cor_cartao)

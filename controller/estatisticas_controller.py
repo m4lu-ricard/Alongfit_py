@@ -24,3 +24,23 @@ class EstatisticasController:
         }
         
         return dados_estatisticos
+
+    def buscar_dados_mes(self, mes):
+        mes_formatado = str(mes).zfill(2)
+        
+        resultados = self.banco_dados.obter_dados_grafico_mes(self.identificador_usuario_ativo, mes_formatado)
+        
+        dias = []
+        qtd_alongamentos = []
+        minutos_total = []
+        
+        for linha in resultados:
+            dia = str(linha[0])
+            qtd = linha[1]
+            minutos = round((linha[2] or 0) / 60, 1) 
+            
+            dias.append(dia)
+            qtd_alongamentos.append(qtd)
+            minutos_total.append(minutos)
+            
+        return dias, qtd_alongamentos, minutos_total

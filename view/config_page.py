@@ -69,7 +69,6 @@ class ConfigPage(tk.Frame):
 
         fonte_labels = ("Helvetica", 20)
 
-        # Linha 1 — Tema escuro
         self.linha_tema = tk.Frame(self.form_frame, bg="#FFFFFF")
         self.linha_tema.pack(fill="x", pady=20)
         tk.Label(self.linha_tema, text="Modo Escuro (Tema)",
@@ -80,7 +79,6 @@ class ConfigPage(tk.Frame):
         )
         self.chk_tema.pack(side="right")
 
-        # Linha 2 — Sons (CORRIGIDO: Rótulo alterado para refletir a lógica correta)
         self.linha_sons = tk.Frame(self.form_frame, bg="#FFFFFF")
         self.linha_sons.pack(fill="x", pady=20)
         tk.Label(self.linha_sons, text="Ativar sons",
@@ -91,7 +89,6 @@ class ConfigPage(tk.Frame):
         )
         self.chk_sons.pack(side="right")
 
-        # Linha 3 — Hidratação
         self.linha_hidra = tk.Frame(self.form_frame, bg="#FFFFFF")
         self.linha_hidra.pack(fill="x", pady=20)
         tk.Label(self.linha_hidra, text="Lembrete de hidratação:",
@@ -116,11 +113,10 @@ class ConfigPage(tk.Frame):
         self.btn_sair = tk.Button(
             self.conteudo_cartao, text="Sair", bg="#FFFFFF", fg="#1A1A1A",
             font=("Helvetica", 20), relief="flat", cursor="hand2",
-            command=self._voltar
+            command=self._logout
         )
         self.btn_sair.pack(pady=(60, 0))
 
-    # ── TEMA ──────────────────────────────────────────────────────────────
     def _ao_clicar_no_tema(self):
         self._salvar_tudo_na_memoria()
         if self.app and hasattr(self.app, 'aplicar_tema_global'):
@@ -167,7 +163,6 @@ class ConfigPage(tk.Frame):
         self.btn_sair.configure(bg=cor_cartao, fg=cor_texto,
                                 activebackground=cor_cartao, activeforeground=cor_texto)
 
-    # ── HIDRATAÇÃO ────────────────────────────────────────────────────────
     def _atualizar_estado_hidratacao(self):
         if self.var_hidratacao.get():
             self.combo_frequencia.config(state="readonly")
@@ -175,7 +170,6 @@ class ConfigPage(tk.Frame):
             self.combo_frequencia.config(state="disabled")
         self._salvar_tudo_na_memoria()
 
-    # ── PERSISTÊNCIA ──────────────────────────────────────────────────────
     def _salvar_tudo_na_memoria(self):
         if self.app:
             self.app.config_tema_escuro     = self.var_tema_escuro.get()
@@ -190,8 +184,12 @@ class ConfigPage(tk.Frame):
         except Exception:
             pass
 
-    # ── NAVEGAÇÃO ─────────────────────────────────────────────────────────
     def _voltar(self):
         self._salvar_tudo_na_memoria()
         if self.app:
             self.app.show_page("home")
+
+    def _logout(self):
+        self._salvar_tudo_na_memoria()
+        if self.app and hasattr(self.app, 'deslogar_usuario'):
+            self.app.deslogar_usuario()

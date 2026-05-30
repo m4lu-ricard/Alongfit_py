@@ -29,7 +29,6 @@ class TimerPage(tk.Frame):
         self.app.sessao_controller.vincular_interface_relogio(self.var_tempo_principal.set)
         self.app.sessao_controller.vincular_interface_tempo_total(self.var_tempo_total.set)
 
-        # Aplica o tema salvo ao abrir
         if hasattr(self.app, 'config_tema_escuro'):
             self.aplicar_tema(self.app.config_tema_escuro)
 
@@ -95,10 +94,9 @@ class TimerPage(tk.Frame):
         ).pack(side="left", padx=10)
 
         tk.Button(
-            caixa_botoes, text="Cancelar",
-            bg="#e5e7eb", font=("Helvetica", 16), relief="flat",
-            padx=30, pady=10, command=lambda: self.app.show_page("home")
-        ).pack(side="left", padx=10)
+    caixa_botoes, text="Cancelar",
+    bg="#e5e7eb", font=("Helvetica", 16), relief="flat",
+    padx=30, pady=10, command=self._cancelar_e_zerar_cronometro).pack(side="left", padx=10)
 
     def _build_tempo_total_restante(self):
         self.cartao_total = tk.Frame(self.coluna_direita, bg=BG_CARTAO,
@@ -166,7 +164,6 @@ class TimerPage(tk.Frame):
             self.app.sessao_controller.iniciar_temporizador()
             self.var_texto_botao_pausa.set("Pausa")
 
-    # ── TEMA ──────────────────────────────────────────────────────────────
     def aplicar_tema(self, escuro: bool):
         cor_geral  = "#1E1E1E" if escuro else BG_GERAL
         cor_cartao = "#2D2D2D" if escuro else BG_CARTAO
@@ -180,7 +177,6 @@ class TimerPage(tk.Frame):
         self.coluna_direita.configure(bg=cor_geral)
         self.lbl_titulo_timer.configure(bg=cor_geral, fg=cor_titulo)
 
-        # Cartão timer
         for w in [self.cartao_timer, self.rodape_timer, self.caixa_botoes_timer]:
             w.configure(bg=cor_cartao)
         for lbl in [self.lbl_tarefa_titulo, self.lbl_nome_tarefa]:
@@ -190,13 +186,11 @@ class TimerPage(tk.Frame):
             filho.configure(bg=cor_botoes, fg=cor_titulo,
                             activebackground=cor_botoes, activeforeground=cor_titulo)
 
-        # Cartão tempo total
         self.cartao_total.configure(bg=cor_cartao)
         self.centro_total.configure(bg=cor_cartao)
         self.lbl_total_titulo.configure(bg=cor_cartao, fg=cor_texto)
         self.lbl_total_valor.configure(bg=cor_cartao, fg=cor_titulo)
 
-        # Cartão semanal
         self.cartao_semanal.configure(bg=cor_cartao)
         self.caixa_dias.configure(bg=cor_cartao)
         self.lbl_semanal_titulo.configure(bg=cor_cartao, fg=cor_titulo)
@@ -204,3 +198,13 @@ class TimerPage(tk.Frame):
             dia_container.configure(bg=cor_cartao)
             for filho in dia_container.winfo_children():
                 filho.configure(bg=cor_cartao)
+    
+    def _cancelar_e_zerar_cronometro(self):
+        """Para o temporizador, reseta os tempos para zero e permanece na página"""
+        if self.app and self.app.sessao_controller:
+            self.app.sessao_controller.pausar_temporizador()
+        
+            self.app.sessao_controller.tempo_restante_segundos = 0
+            self.app.sessao_controller.tempo_trabalho_total_restante = 0
+        
+            self.app.sessao_controller.atualizar_interface_relogio()
