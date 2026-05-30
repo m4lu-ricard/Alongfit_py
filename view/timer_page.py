@@ -33,31 +33,36 @@ class TimerPage(tk.Frame):
             self.aplicar_tema(self.app.config_tema_escuro)
 
     def _build(self):
-        self.contorno = tk.Frame(self, bg=BG_GERAL, width=1300, height=1400)
-        self.contorno.pack(anchor="c", expand=True, fill="both")
-        self.contorno.pack_propagate(False)
+        self.contorno = tk.Frame(self, bg=BG_GERAL)
+        self.contorno.pack(expand=True, fill="both")
 
-        self.coluna_esquerda = tk.Frame(self.contorno, bg=BG_GERAL)
-        self.coluna_esquerda.pack(side="left", anchor="nw", padx=(0, 20),
-                                  expand=True, fill="both")
-        self.coluna_direita = tk.Frame(self.contorno, bg=BG_GERAL)
-        self.coluna_direita.pack(side="right", anchor="n", expand=True, fill="both")
-
+        # 1. CABEÇALHO (Ocupa a largura toda e serve para o título principal)
+        self.cabecalho = tk.Frame(self.contorno, bg=BG_GERAL)
+        self.cabecalho.pack(fill="x", padx=30)
+        
         self.lbl_titulo_timer = tk.Label(
-            self.coluna_esquerda, text="Timer de Trabalho",
+            self.cabecalho, text="Timer de Trabalho",
             bg=BG_GERAL, fg=COR_TITULO, font=self.f_titulo
         )
-        self.lbl_titulo_timer.pack(pady=(30, 10), anchor="w")
+        self.lbl_titulo_timer.pack(pady=(30, 15), anchor="w")
+
+        # 2. CORPO (Onde as colunas são divididas e começam exatamente na mesma altura)
+        self.corpo = tk.Frame(self.contorno, bg=BG_GERAL)
+        self.corpo.pack(expand=True, fill="both", padx=30, pady=(0, 30))
+
+        self.coluna_esquerda = tk.Frame(self.corpo, bg=BG_GERAL)
+        self.coluna_esquerda.pack(side="left", expand=True, fill="both", padx=(0, 15))
+        
+        self.coluna_direita = tk.Frame(self.corpo, bg=BG_GERAL)
+        self.coluna_direita.pack(side="right", expand=True, fill="both", padx=(15, 0))
 
         self._build_timer_ativo()
         self._build_tempo_total_restante()
         self._build_progresso_semanal()
 
     def _build_timer_ativo(self):
-        self.cartao_timer = tk.Frame(self.coluna_esquerda, bg=BG_CARTAO,
-                                     width=630, height=900)
-        self.cartao_timer.pack(anchor="w", fill="both", expand=True)
-        self.cartao_timer.pack_propagate(False)
+        self.cartao_timer = tk.Frame(self.coluna_esquerda, bg=BG_CARTAO)
+        self.cartao_timer.pack(fill="both", expand=True)
 
         self.lbl_tarefa_titulo = tk.Label(
             self.cartao_timer, text="Tarefa em Andamento:",
@@ -94,15 +99,15 @@ class TimerPage(tk.Frame):
         ).pack(side="left", padx=10)
 
         tk.Button(
-    caixa_botoes, text="Cancelar",
-    bg="#e5e7eb", font=("Helvetica", 16), relief="flat",
-    padx=30, pady=10, command=self._cancelar_e_zerar_cronometro).pack(side="left", padx=10)
+            caixa_botoes, text="Cancelar",
+            bg="#e5e7eb", font=("Helvetica", 16), relief="flat",
+            padx=30, pady=10, command=self._cancelar_e_zerar_cronometro
+        ).pack(side="left", padx=10)
 
     def _build_tempo_total_restante(self):
-        self.cartao_total = tk.Frame(self.coluna_direita, bg=BG_CARTAO,
-                                     width=630, height=350)
-        self.cartao_total.pack(anchor="w", pady=(83, 20), fill="x")
-        self.cartao_total.pack_propagate(False)
+        self.cartao_total = tk.Frame(self.coluna_direita, bg=BG_CARTAO)
+        # O cartão agora expande perfeitamente com margem inferior
+        self.cartao_total.pack(pady=(0, 15), fill="both", expand=True)
 
         self.lbl_total_titulo = tk.Label(
             self.cartao_total, text="Tempo Total Restante:",
@@ -120,10 +125,9 @@ class TimerPage(tk.Frame):
         self.lbl_total_valor.pack()
 
     def _build_progresso_semanal(self):
-        self.cartao_semanal = tk.Frame(self.coluna_direita, bg=BG_CARTAO,
-                                       width=630, height=350)
-        self.cartao_semanal.pack(anchor="w", fill="x")
-        self.cartao_semanal.pack_propagate(False)
+        self.cartao_semanal = tk.Frame(self.coluna_direita, bg=BG_CARTAO)
+        # O cartão agora expande perfeitamente com margem superior
+        self.cartao_semanal.pack(pady=(15, 0), fill="both", expand=True)
 
         self.lbl_semanal_titulo = tk.Label(
             self.cartao_semanal, text="Progresso semanal",
@@ -141,7 +145,7 @@ class TimerPage(tk.Frame):
 
     def _build_icone_dia(self, parent, dia_nome, fez_alongamento):
         dia_container = tk.Frame(parent, bg=BG_CARTAO)
-        dia_container.pack(side="left", padx=15)
+        dia_container.pack(side="left", padx=10) # Reduzido ligeiramente para caber melhor em ecrãs menores
         imagem_nome = "verificado.png" if fez_alongamento else "triste.png"
         simbolo = "✅" if fez_alongamento else "❌"
         cor_emoji = "#4ade80" if fez_alongamento else "#f87171"
@@ -173,6 +177,8 @@ class TimerPage(tk.Frame):
 
         self.configure(bg=cor_geral)
         self.contorno.configure(bg=cor_geral)
+        self.cabecalho.configure(bg=cor_geral)
+        self.corpo.configure(bg=cor_geral)
         self.coluna_esquerda.configure(bg=cor_geral)
         self.coluna_direita.configure(bg=cor_geral)
         self.lbl_titulo_timer.configure(bg=cor_geral, fg=cor_titulo)
@@ -200,11 +206,8 @@ class TimerPage(tk.Frame):
                 filho.configure(bg=cor_cartao)
     
     def _cancelar_e_zerar_cronometro(self):
-        """Para o temporizador, reseta os tempos para zero e permanece na página"""
         if self.app and self.app.sessao_controller:
             self.app.sessao_controller.pausar_temporizador()
-        
             self.app.sessao_controller.tempo_restante_segundos = 0
             self.app.sessao_controller.tempo_trabalho_total_restante = 0
-        
             self.app.sessao_controller.atualizar_interface_relogio()

@@ -39,3 +39,10 @@ class AuthController:
     def deslogar_usuario(self):
         self.identificador_usuario_ativo = None
         self.nome_usuario_ativo = None
+
+    def cadastrar_novo_usuario(self, nome, email, senha, data_nasc):
+        try:
+            self.banco_dados.inserir_usuario(nome, email, senha, data_nasc)
+            return True, "Cadastro realizado com sucesso!"
+        except Exception as e:
+            return False, f"Erro ao cadastrar: {str(e)}"

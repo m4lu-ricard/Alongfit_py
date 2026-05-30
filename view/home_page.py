@@ -219,9 +219,8 @@ class HomePage(tk.Frame):
         )
         self.lbl_titulo.pack(anchor="w", pady=(30, 20), padx=40)
 
-        self.contorno = tk.Frame(self, bg=BG_BRANCO, width=1400, height=700)
+        self.contorno = tk.Frame(self, bg=BG_BRANCO)
         self.contorno.pack(anchor="c", expand=True, fill="both")
-        self.contorno.pack_propagate(False)
 
         self._build_area_input()
         self._build_area_scroll()

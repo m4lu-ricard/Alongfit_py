@@ -15,9 +15,11 @@ from sidebar import Sidebar
 from stats_page import StatsPage
 from timer_page import TimerPage
 from LoginPage import LoginPage
+from CadastroPage import CadastroPage
 
 PAGES = {
     "login": LoginPage,
+    "cadastro": CadastroPage,
     "home": HomePage,
     "stats": StatsPage,
     "timer": TimerPage,
@@ -25,7 +27,7 @@ PAGES = {
     "alongamento": AlongamentoPage,
 }
 
-PAGES_COM_APP = {"login", "home", "timer", "alongamento", "config", "stats"}
+PAGES_COM_APP = {"login", "cadastro", "home", "timer", "alongamento", "config", "stats"}
 
 
 def rodar_app():
@@ -38,9 +40,19 @@ class AlongFitApp(tk.Tk):
         super().__init__()
 
         self.title("AlongFit")
-        self.geometry("700x450")
-        self.minsize(500, 350)
         self.configure(bg="#FFFFFF")
+        
+        largura_tela = self.winfo_screenwidth()
+        altura_tela = self.winfo_screenheight()
+        
+        largura_app = int(largura_tela * 0.85)
+        altura_app = int(altura_tela * 0.85)
+        
+        pos_x = (largura_tela // 2) - (largura_app // 2)
+        pos_y = (altura_tela // 2) - (altura_app // 2)
+        
+        self.geometry(f"{largura_app}x{altura_app}+{pos_x}+{pos_y}")
+        self.minsize(800, 600) 
 
         self.config_tema_escuro     = False
         self.config_sons            = True
@@ -73,9 +85,7 @@ class AlongFitApp(tk.Tk):
         
         self.show_page("home")
 
-
     def deslogar_usuario(self):
-
         if self.sessao_controller:
             self.sessao_controller.pausar_temporizador()
             
@@ -84,7 +94,6 @@ class AlongFitApp(tk.Tk):
         self.sessao_controller = None
         
         self.sidebar.pack_forget()
-        
         self.show_page("login")
 
     def show_page(self, page_name):
@@ -99,9 +108,7 @@ class AlongFitApp(tk.Tk):
 
     def aplicar_tema_global(self):
         escuro = self.config_tema_escuro
-
         cor_raiz    = "#1E1E1E" if escuro else "#FFFFFF"
-        cor_sidebar = "#2D2D2D" if escuro else "#FFFFFF"
         cor_content = "#1E1E1E" if escuro else "#FFFFFF"
 
         self.configure(bg=cor_raiz)
@@ -115,9 +122,5 @@ class AlongFitApp(tk.Tk):
 
 
 if __name__ == "__main__":
-    try:
-        import hupper
-        print("Hot Reload Ativo! Monitorando alterações...")
-        reloader = hupper.start_reloader("app.rodar_app")
-    except ImportError:
-        rodar_app()
+
+    rodar_app()

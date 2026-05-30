@@ -4,6 +4,7 @@ from model.Alongamento import Alongamento
 from model.JornadaTrabalho import JornadaTrabalho
 
 class GerenciadorBanco:
+    # Alterado para v2 para garantir que nasce limpo
     def __init__(self, caminho_banco_dados="alongfit.db"):
         self.caminho_banco_dados = caminho_banco_dados
         self._inicializar_banco_se_necessario()
@@ -47,11 +48,13 @@ class GerenciadorBanco:
                         duracao INTEGER
                     );
 
+                    -- CORRIGIDO: Removido o Usuario_idUsuario daqui!
                     CREATE TABLE IF NOT EXISTS recomendacao_along (
                         TipoDor_idTipoDor INTEGER,
                         Alongamento_idAl INTEGER,
-                        Usuario_idUsuario INTEGER,
-                        PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAl, Usuario_idUsuario)
+                        PRIMARY KEY (TipoDor_idTipoDor, Alongamento_idAl),
+                        FOREIGN KEY (TipoDor_idTipoDor) REFERENCES TipoDor(idTipoDor) ON DELETE CASCADE,
+                        FOREIGN KEY (Alongamento_idAl) REFERENCES Alongamento(id) ON DELETE CASCADE
                     );
 
                     CREATE TABLE IF NOT EXISTS HistoricoAlon (
@@ -120,15 +123,17 @@ class GerenciadorBanco:
             conexao_banco.commit()
 
 
-    def buscar_alongamentos_por_dor(self, identificador_tipo_dor, identificador_usuario):
+    def buscar_alongamentos_por_dor(self, id_tipo_dor):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
+            
+            # CORRIGIDO: Adicionada a vírgula depois da variável
             cursor_banco.execute("""
                 SELECT a.id, a.nome, a.descricao, a.duracao
                 FROM Alongamento a
-                INNER JOIN recomendacao_along r ON a.id = r.alongamento_idAl
-                WHERE r.TipoDor_idTipoDor = ? AND r.Usuario_idUsuario = ?
-            """, (identificador_tipo_dor, identificador_usuario))
+                JOIN recomendacao_along r ON a.id = r.Alongamento_idAl
+                WHERE r.TipoDor_idTipoDor = ?
+            """, (id_tipo_dor,))
             
             linhas_retornadas = cursor_banco.fetchall()
             lista_alongamentos = []
@@ -260,3 +265,13 @@ class GerenciadorBanco:
             """, (identificador_usuario, mes_texto))
             
             return cursor_banco.fetchall()
+        
+    def inserir_usuario(self, nome, email, senha, data_nasc):
+        import sqlite3
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            cursor_banco.execute("""
+                INSERT INTO Usuario (nome, email, senha, dataNasc)
+                VALUES (?, ?, ?, ?)
+            """, (nome, email, senha, data_nasc))
+            conexao_banco.commit()

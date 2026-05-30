@@ -28,8 +28,7 @@ CREATE TABLE recomendacao_along (
 
     PRIMARY KEY (
         tipoDor_idTipoDor,
-        alongamento_idAl,
-        
+        alongamento_idAl
     ),
 
     FOREIGN KEY (tipoDor_idTipoDor)
@@ -38,7 +37,7 @@ CREATE TABLE recomendacao_along (
 
     FOREIGN KEY (alongamento_idAl)
         REFERENCES Alongamento(id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE HistoricoAlon (
@@ -61,10 +60,10 @@ CREATE TABLE HistoricoAlon (
 CREATE TABLE JornadaTrabalho (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     nome              VARCHAR(100) NOT NULL,
-    Tempo             INTEGER NOT NULL, -- Corrigido para INTEGER (para guardar 4, 6, 8)
+    Tempo             INTEGER NOT NULL, 
     tempoLembrete     INTEGER NOT NULL,
     usuario_idUsuario INTEGER NOT NULL,
-    desconforto       INTEGER,          -- Corrigido para INTEGER (Chave Estrangeira do ID da Dor)
+    desconforto       INTEGER,          
     FOREIGN KEY (usuario_idUsuario)
         REFERENCES Usuario(idUsuario)
         ON DELETE CASCADE ON UPDATE CASCADE,

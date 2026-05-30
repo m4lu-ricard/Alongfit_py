@@ -32,9 +32,8 @@ class ConfigPage(tk.Frame):
         self._atualizar_estado_hidratacao()
 
     def _build(self):
-        self.contorno = tk.Frame(self, bg="#D9D9D9", width=1300, height=1400)
+        self.contorno = tk.Frame(self, bg="#D9D9D9")
         self.contorno.pack(anchor="c", expand=True, fill="both")
-        self.contorno.pack_propagate(False)
 
         self.barra_superior = tk.Frame(self.contorno, bg="#D9D9D9")
         self.barra_superior.pack(fill="x", padx=30, pady=20)
