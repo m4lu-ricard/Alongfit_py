@@ -7,7 +7,7 @@ class PopUp(tk.Toplevel):
         super().__init__(parent)
         self.controller  = controller
         self.alongamento = alongamento
-        self._parent     = parent   # guarda para herdar o tema
+        self._parent     = parent
 
         self.tempo_restante = alongamento.duracao
         self.timer_id = None
@@ -29,7 +29,6 @@ class PopUp(tk.Toplevel):
         self._build_cartao_principal()
         self._centralizar()
 
-        # Aplica o tema herdado do app
         if hasattr(self._parent, 'config_tema_escuro'):
             self._aplicar_tema_popup(self._parent.config_tema_escuro)
 
@@ -132,9 +131,7 @@ class PopUp(tk.Toplevel):
         novo_y = self.winfo_y() + (event.y - self._y_mouse)
         self.geometry(f"+{novo_x}+{novo_y}")
 
-    # ── TEMA ──────────────────────────────────────────────────────────────
     def _aplicar_tema_popup(self, escuro: bool):
-        # O cabeçalho verde é mantido — só o cartão interno muda
         cor_cartao = "#2D2D2D" if escuro else "white"
         cor_texto  = "#FFFFFF" if escuro else "black"
 

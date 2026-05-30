@@ -12,7 +12,6 @@ class GerenciadorBanco:
         import os
         from pathlib import Path
         
-        # Se o arquivo do banco já existir na pasta, o sistema já foi iniciado antes.
         if os.path.exists(self.caminho_banco_dados):
             return
 
@@ -25,7 +24,6 @@ class GerenciadorBanco:
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
             try:
-                # 1. CRIAMOS AS TABELAS DIRETAMENTE AQUI (Garante que não há erros de sintaxe!)
                 cursor_banco.executescript("""
                     CREATE TABLE IF NOT EXISTS Usuario (
                         idUsuario INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,7 +84,6 @@ class GerenciadorBanco:
                     );
                 """)
 
-                # 2. INSERIMOS OS DADOS DO SEU SCRIPT DE INSERTS
                 if caminho_dados.exists():
                     with open(caminho_dados, 'r', encoding='utf-8') as arquivo_dados:
                         cursor_banco.executescript(arquivo_dados.read())
@@ -206,11 +203,7 @@ class GerenciadorBanco:
             total_alongamentos = resultado[0] if resultado[0] else 0
             tempo_total = resultado[1] if resultado[1] else 0
             return total_alongamentos, tempo_total
-
-    # ==============================================================================
-    # AS FUNÇÕES NOVAS ANEXADAS ABAIXO (Para o App não dar erro nas telas novas)
-    # ==============================================================================
-
+        
     def registrar_nova_tarefa(self, jornada):
         with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
             cursor_banco = conexao_banco.cursor()
@@ -269,3 +262,20 @@ class GerenciadorBanco:
             """, (identificador_usuario,))
             linhas = cursor_banco.fetchall()
             return [int(linha[0]) for linha in linhas if linha[0] is not None]
+        
+    def obter_dados_grafico_mes(self, identificador_usuario, mes_texto):
+        with sqlite3.connect(self.caminho_banco_dados) as conexao_banco:
+            cursor_banco = conexao_banco.cursor()
+            
+            cursor_banco.execute("""
+                SELECT 
+                    strftime('%d', inicio) as dia, 
+                    COUNT(*) as quantidade, 
+                    SUM(tempoTotal) as tempo_segundos
+                FROM HistoricoAlon 
+                WHERE usuario_idUsuario = ? AND strftime('%m', inicio) = ?
+                GROUP BY dia
+                ORDER BY dia ASC
+            """, (identificador_usuario, mes_texto))
+            
+            return cursor_banco.fetchall()

@@ -99,7 +99,6 @@ class Sidebar(tk.Frame):
             container.configure(bg=bg)
             icon_label.configure(bg=bg)
 
-    # ── TEMA ──────────────────────────────────────────────────────────────
     def aplicar_tema(self, escuro: bool):
         cor_sidebar = "#2D2D2D" if escuro else SIDEBAR_BG
         cor_texto   = "#FFFFFF" if escuro else TEXT_DARK

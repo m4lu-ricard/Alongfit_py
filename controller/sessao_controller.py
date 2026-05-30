@@ -1,6 +1,7 @@
 import tkinter as tk
 from pathlib import Path
 import pygame
+import random
 
 from datetime import timedelta, datetime
 from controller.gerenciador_banco import GerenciadorBanco
@@ -34,7 +35,6 @@ class SessaoController:
         except Exception:
             pass
 
-    # ── CONFIGURAÇÃO DA SESSÃO ────────────────────────────────────────────
     def configurar_sessao(self, horas_trabalho, minutes_pausa, identificador_dor):
         self.tempo_trabalho_total_restante = horas_trabalho * 3600
         self.tempo_pausa_segundos          = minutes_pausa * 60
@@ -48,7 +48,6 @@ class SessaoController:
             self.tempo_restante_segundos = self.tempo_trabalho_total_restante
         self.atualizar_interface_relogio()
 
-    # ── VINCULAÇÃO DE INTERFACE ───────────────────────────────────────────
     def vincular_interface_relogio(self, funcao_atualizacao):
         self.funcao_atualizar_texto_relogio = funcao_atualizacao
         self.atualizar_interface_relogio()
@@ -62,7 +61,6 @@ class SessaoController:
             self.identificador_usuario_logado
         )
 
-    # ── TEMPORIZADOR ─────────────────────────────────────────────────────
     def iniciar_temporizador(self):
         if not self.temporizador_rodando:
             self.temporizador_rodando = True
@@ -109,7 +107,6 @@ class SessaoController:
                 str(timedelta(seconds=max(0, self.tempo_trabalho_total_restante)))
             )
 
-    # ── ALERTA DE ALONGAMENTO ─────────────────────────────────────────────
     def disparar_alerta_alongamento(self):
         sons_ativados = getattr(self.janela_principal, 'config_sons', True)
 
@@ -142,7 +139,8 @@ class SessaoController:
                 duracao=30
             )
         else:
-            alongamento = alongamentos[0]
+            import random
+            alongamento = random.choice(alongamentos)
 
         try:
             agora  = datetime.now()
@@ -183,7 +181,6 @@ class SessaoController:
         if self.funcao_atualizar_tempo_total:
             self.funcao_atualizar_tempo_total("0:00:00")
 
-    # ── LEMBRETE DE HIDRATAÇÃO ────────────────────────────────────────────
     def _obter_intervalo_hidratacao_ms(self):
         frequencia = getattr(self.janela_principal, 'config_frequencia_agua', "A cada 1 hora")
         mapa = {
