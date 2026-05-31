@@ -51,7 +51,7 @@ class PopUp(tk.Toplevel):
             pass
 
         self.lbl_app_nome = tk.Label(topo, text="AlongFit", bg="#A3E4A3",
-                                     font=("Helvetica", 11, "bold"))
+                                     fg="black", font=("Helvetica", 11, "bold"))
         self.lbl_app_nome.pack(side="left", padx=5)
         self.lbl_app_nome.bind("<Button-1>", self._iniciar_movimento)
         self.lbl_app_nome.bind("<B1-Motion>", self._mover_janela)
@@ -132,8 +132,8 @@ class PopUp(tk.Toplevel):
         self.geometry(f"+{novo_x}+{novo_y}")
 
     def _aplicar_tema_popup(self, escuro: bool):
-        cor_cartao = "#2D2D2D" if escuro else "white"
-        cor_texto  = "#FFFFFF" if escuro else "black"
+        cor_cartao = "#F2F2F2" if escuro else "white"
+        cor_texto  = "black"
 
         self.cartao.configure(bg=cor_cartao)
         self.lbl_titulo_along.configure(bg=cor_cartao, fg=cor_texto)

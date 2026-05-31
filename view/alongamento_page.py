@@ -29,25 +29,25 @@ class AlongamentoPage(tk.Frame):
 
         self.lbl_subtitulo = tk.Label(
             self.caixa, text="✨ Hora de Alongar! ✨",
-            font=("Helvetica", 20, "bold"), fg="#a7f3d0", bg="white"
+            font=("Helvetica", 20, "bold"), fg="#000000", bg="white"
         )
         self.lbl_subtitulo.pack(pady=(0, 10))
 
         self.lbl_nome = tk.Label(
             self.caixa, textvariable=self.var_nome,
-            font=self.f_titulo, fg="#1A1A1A", bg="white"
+            font=self.f_titulo, fg="#000000", bg="white"
         )
         self.lbl_nome.pack(pady=10)
 
         self.lbl_descricao = tk.Label(
             self.caixa, textvariable=self.var_descricao,
-            font=self.f_descricao, fg="#444444", bg="white"
+            font=self.f_descricao, fg="#000000", bg="white"
         )
         self.lbl_descricao.pack(pady=20)
 
         self.lbl_relogio = tk.Label(
             self.caixa, textvariable=self.var_tempo,
-            font=self.f_relogio, fg="#1A1A1A", bg="white"
+            font=self.f_relogio, fg="#000000", bg="white"
         )
         self.lbl_relogio.pack(pady=40)
 
@@ -86,11 +86,11 @@ class AlongamentoPage(tk.Frame):
 
     # ── TEMA ──────────────────────────────────────────────────────────────
     def aplicar_tema(self, escuro: bool):
-        cor_fundo  = "#1E1E1E" if escuro else "#d9d9d9"
-        cor_cartao = "#2D2D2D" if escuro else "white"
-        cor_texto  = "#FFFFFF" if escuro else "#1A1A1A"
-        cor_sub    = "#CCCCCC" if escuro else "#444444"
-        cor_botao  = "#3A3A3A" if escuro else "#e5e7eb"
+        cor_fundo  = "#CFCFCF" if escuro else "#d9d9d9"
+        cor_cartao = "#F2F2F2" if escuro else "white"
+        cor_texto  = "#000000"
+        cor_sub    = "#000000"
+        cor_botao  = "#D8D8D8" if escuro else "#e5e7eb"
 
         self.configure(bg=cor_fundo)
         self.caixa.configure(bg=cor_cartao)

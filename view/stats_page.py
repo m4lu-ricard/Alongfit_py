@@ -20,8 +20,8 @@ from controller.estatisticas_controller import EstatisticasController
 
 BG_BRANCO = "white"
 BG_CINZA_ESCURO = "#D9D9D9"
-COR_TITULO = "#1A1A1A"
-COR_TEXTO = "#444444"
+COR_TITULO = "#000000"
+COR_TEXTO = "#000000"
 
 
 class StatsPage(tk.Frame):
@@ -82,8 +82,8 @@ class StatsPage(tk.Frame):
             dias, qtd_alongamentos, minutos = [], [], []
 
         escuro = getattr(self.app, 'config_tema_escuro', False)
-        bg_color = "#2D2D2D" if escuro else "white"
-        text_color = "white" if escuro else "black"
+        bg_color = "#F2F2F2" if escuro else "white"
+        text_color = "black"
 
         if not dias:
             tk.Label(
@@ -137,10 +137,10 @@ class StatsPage(tk.Frame):
         self.criar_grafico()
 
     def aplicar_tema(self, escuro: bool):
-        cor_fundo  = "#1E1E1E" if escuro else BG_CINZA_ESCURO
-        cor_cartao = "#2D2D2D" if escuro else BG_BRANCO
-        cor_texto  = "#FFFFFF" if escuro else COR_TITULO
-        cor_texto_sec = "#FFFFFF" if escuro else COR_TEXTO
+        cor_fundo  = "#CFCFCF" if escuro else BG_CINZA_ESCURO
+        cor_cartao = "#F2F2F2" if escuro else BG_BRANCO
+        cor_texto  = "#000000"
+        cor_texto_sec = "#000000"
 
         self.configure(bg=cor_fundo)
         self.lbl_titulo.configure(bg=cor_fundo, fg=cor_texto)

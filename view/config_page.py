@@ -40,12 +40,12 @@ class ConfigPage(tk.Frame):
 
         self.lbl_titulo_barra = tk.Label(
             self.barra_superior, text="Aquecimento - Antes de iniciar!",
-            bg="#D9D9D9", fg="#1A1A1A", font=("Helvetica", 18)
+            bg="#D9D9D9", fg="#000000", font=("Helvetica", 18)
         )
         self.lbl_titulo_barra.pack(side="left")
 
         self.btn_x = tk.Button(
-            self.barra_superior, text="X", bg="#D9D9D9", fg="#1A1A1A",
+            self.barra_superior, text="X", bg="#D9D9D9", fg="#000000",
             font=("Helvetica", 20, "bold"), relief="flat",
             cursor="hand2", command=self._voltar
         )
@@ -110,7 +110,7 @@ class ConfigPage(tk.Frame):
                                    lambda e: self._salvar_tudo_na_memoria())
 
         self.btn_sair = tk.Button(
-            self.conteudo_cartao, text="Sair", bg="#FFFFFF", fg="#1A1A1A",
+            self.conteudo_cartao, text="Sair", bg="#FFFFFF", fg="#000000",
             font=("Helvetica", 20), relief="flat", cursor="hand2",
             command=self._logout
         )
@@ -122,11 +122,11 @@ class ConfigPage(tk.Frame):
             self.app.aplicar_tema_global()
 
     def aplicar_tema(self, escuro: bool):
-        cor_tela   = "#1E1E1E" if escuro else "#D9D9D9"
-        cor_cartao = "#2D2D2D" if escuro else "#FFFFFF"
-        cor_texto  = "#FFFFFF" if escuro else "#1A1A1A"
-        cor_titulo = "#FFFFFF" if escuro else "#000000"
-        cor_chk    = "#1E1E1E" if escuro else "#FFFFFF"
+        cor_tela   = "#CFCFCF" if escuro else "#D9D9D9"
+        cor_cartao = "#F2F2F2" if escuro else "#FFFFFF"
+        cor_texto  = "#000000"
+        cor_titulo = "#000000"
+        cor_chk    = "#FFFFFF"
 
         self.configure(bg=cor_tela)
         self.contorno.configure(bg=cor_tela)

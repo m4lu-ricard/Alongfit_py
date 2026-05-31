@@ -4,8 +4,8 @@ from tkinter import font as tkfont
 
 BG_GERAL  = "#d9d9d9"
 BG_CARTAO = "#FFFFFF"
-COR_TEXTO = "#444444"
-COR_TITULO = "#1A1A1A"
+COR_TEXTO = "#000000"
+COR_TITULO = "#000000"
 
 
 class TimerPage(tk.Frame):
@@ -94,13 +94,13 @@ class TimerPage(tk.Frame):
 
         tk.Button(
             caixa_botoes, textvariable=self.var_texto_botao_pausa,
-            bg="#e5e7eb", font=("Helvetica", 16), relief="flat",
+            bg="#e5e7eb", fg="#000000", font=("Helvetica", 16), relief="flat",
             padx=30, pady=10, command=self.alternar_pausa
         ).pack(side="left", padx=10)
 
         tk.Button(
             caixa_botoes, text="Cancelar",
-            bg="#e5e7eb", font=("Helvetica", 16), relief="flat",
+            bg="#e5e7eb", fg="#000000", font=("Helvetica", 16), relief="flat",
             padx=30, pady=10, command=self._cancelar_e_zerar_cronometro
         ).pack(side="left", padx=10)
 
@@ -158,7 +158,7 @@ class TimerPage(tk.Frame):
             tk.Label(dia_container, text=simbolo, font=("Helvetica", 24),
                      bg=BG_CARTAO, fg=cor_emoji).pack()
         tk.Label(dia_container, text=dia_nome, bg=BG_CARTAO,
-                 font=("Helvetica", 14)).pack(pady=(5, 0))
+                 fg="#000000", font=("Helvetica", 14)).pack(pady=(5, 0))
 
     def alternar_pausa(self):
         if self.var_texto_botao_pausa.get() == "Pausa":
@@ -169,11 +169,11 @@ class TimerPage(tk.Frame):
             self.var_texto_botao_pausa.set("Pausa")
 
     def aplicar_tema(self, escuro: bool):
-        cor_geral  = "#1E1E1E" if escuro else BG_GERAL
-        cor_cartao = "#2D2D2D" if escuro else BG_CARTAO
-        cor_texto  = "#FFFFFF" if escuro else COR_TEXTO
-        cor_titulo = "#FFFFFF" if escuro else COR_TITULO
-        cor_botoes = "#3A3A3A" if escuro else "#e5e7eb"
+        cor_geral  = "#CFCFCF" if escuro else BG_GERAL
+        cor_cartao = "#F2F2F2" if escuro else BG_CARTAO
+        cor_texto  = "#000000"
+        cor_titulo = "#000000"
+        cor_botoes = "#D8D8D8" if escuro else "#e5e7eb"
 
         self.configure(bg=cor_geral)
         self.contorno.configure(bg=cor_geral)
@@ -203,7 +203,7 @@ class TimerPage(tk.Frame):
         for dia_container in self.caixa_dias.winfo_children():
             dia_container.configure(bg=cor_cartao)
             for filho in dia_container.winfo_children():
-                filho.configure(bg=cor_cartao)
+                filho.configure(bg=cor_cartao, fg=cor_titulo)
     
     def _cancelar_e_zerar_cronometro(self):
         if self.app and self.app.sessao_controller:

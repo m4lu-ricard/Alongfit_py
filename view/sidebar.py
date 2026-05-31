@@ -4,7 +4,7 @@ from tkinter import font as tkfont
 
 SIDEBAR_BG = "#FFFFFF"
 CARD_BG    = "#FFFFFF"
-TEXT_DARK  = "#1A1A1A"
+TEXT_DARK  = "#000000"
 BTN_HOVER  = "#C8C8C8"
 
 MENU_ITEMS = [
@@ -93,16 +93,16 @@ class Sidebar(tk.Frame):
 
     def _refresh_buttons(self):
         bg_sidebar = self._bg_sidebar
-        bg_active  = "#3A3A3A" if bg_sidebar == "#2D2D2D" else CARD_BG
+        bg_active  = "#FFFFFF" if bg_sidebar == "#CFCFCF" else CARD_BG
         for page_name, (container, icon_label) in self.buttons.items():
             bg = bg_active if page_name == self.active_page else bg_sidebar
             container.configure(bg=bg)
             icon_label.configure(bg=bg)
 
     def aplicar_tema(self, escuro: bool):
-        cor_sidebar = "#2D2D2D" if escuro else SIDEBAR_BG
-        cor_texto   = "#FFFFFF" if escuro else TEXT_DARK
-        cor_ativo   = "#3A3A3A" if escuro else CARD_BG
+        cor_sidebar = "#CFCFCF" if escuro else SIDEBAR_BG
+        cor_texto   = "#000000"
+        cor_ativo   = "#FFFFFF" if escuro else CARD_BG
 
         self.configure(bg=cor_sidebar)
         self.logo_frame.configure(bg=cor_sidebar)

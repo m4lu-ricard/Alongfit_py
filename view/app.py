@@ -108,8 +108,8 @@ class AlongFitApp(tk.Tk):
 
     def aplicar_tema_global(self):
         escuro = self.config_tema_escuro
-        cor_raiz    = "#1E1E1E" if escuro else "#FFFFFF"
-        cor_content = "#1E1E1E" if escuro else "#FFFFFF"
+        cor_raiz    = "#CFCFCF" if escuro else "#FFFFFF"
+        cor_content = "#CFCFCF" if escuro else "#FFFFFF"
 
         self.configure(bg=cor_raiz)
         self.content.configure(bg=cor_content)

@@ -6,8 +6,8 @@ BG_CINZA_CLARO  = "#f0f0f0"
 BG_CINZA_ESCURO = "#D9D9D9"
 BG_BOTAO_VERDE  = "#a7f3d0"
 BG_BOTAO_CINZA  = "#c8d6ce"
-COR_TEXTO       = "#444444"
-COR_TITULO      = "#1A1A1A"
+COR_TEXTO       = "#000000"
+COR_TITULO      = "#000000"
 
 
 class CartaoTarefa(tk.Frame):
@@ -37,7 +37,7 @@ class CartaoTarefa(tk.Frame):
                   command=self.alternar_detalhes).pack(side="left")
         
         tk.Label(cab, textvariable=self.var_tempo_info, font=("Helvetica", 14),
-                 bg=BG_CINZA_CLARO, fg="#555555").pack(side="left", padx=30)
+                 bg=BG_CINZA_CLARO, fg="#000000").pack(side="left", padx=30)
                  
         tk.Button(cab, text="Excluir", bg="#bcbcbc", fg=COR_TITULO, font=("Helvetica", 13, "bold"), 
                   relief="flat", cursor="hand2", padx=20, pady=8,
@@ -67,6 +67,7 @@ class CartaoTarefa(tk.Frame):
         frame_h.pack(anchor="w")
         for h in [4, 6, 8]:
             tk.Button(frame_h, text=f"{h}h", bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                      fg="#000000",
                       padx=15, pady=5, command=lambda h=h: self._atualizar_jornada(h)).pack(side="left", padx=(0 if h == 4 else 8, 8))
                       
         campo_h = tk.Entry(frame_h, textvariable=self.var_input_horas, font=("Helvetica", 14),
@@ -81,10 +82,12 @@ class CartaoTarefa(tk.Frame):
         frame_d.pack(anchor="w")
         for local, id_dor in [("Pescoço", 1), ("Lombar", 2), ("Punho", 3), ("Mão", 4), ("Costas", 5)]:
             tk.Button(frame_d, text=local, bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                      fg="#000000",
                       padx=12, pady=5, command=lambda id=id_dor: self._selecionar_dor(id)).pack(
                           side="left", padx=(0 if local == "Pescoço" else 6, 6))
                           
         tk.Button(parent, text="Nenhum", bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                  fg="#000000",
                   padx=20, pady=5, command=lambda: self._selecionar_dor(0)).pack(anchor="w", pady=(10, 0))
 
     def _montar_lembretes_e_resumo(self, parent):
@@ -98,6 +101,7 @@ class CartaoTarefa(tk.Frame):
         frame_m.pack(anchor="w")
         for m in [25, 30, 50]:
             tk.Button(frame_m, text=f"{m}m", bg=BG_BOTAO_CINZA, font=fonte_botoes, relief="flat", cursor="hand2",
+                      fg="#000000",
                       padx=15, pady=5, command=lambda m=m: self._atualizar_lembrete(m)).pack(
                           side="left", padx=(0 if m == 25 else 8, 8))
                           
@@ -109,7 +113,7 @@ class CartaoTarefa(tk.Frame):
         caixa = tk.Frame(parent, bg=BG_BRANCO, padx=20, pady=20)
         caixa.pack(anchor="w", fill="x", pady=(30, 0))
         tk.Label(caixa, text="Resumo da sessão", bg=BG_BRANCO,
-                 fg="#555555", font=("Helvetica", 12)).pack(anchor="w")
+                 fg="#000000", font=("Helvetica", 12)).pack(anchor="w")
         self.lbl_resumo_sessao = tk.Label(caixa, text="", bg=BG_BRANCO, fg=COR_TITULO,
                                           font=("Helvetica", 16, "bold"))
         self.lbl_resumo_sessao.pack(anchor="w", pady=(5, 8))
@@ -295,11 +299,11 @@ class HomePage(tk.Frame):
 
 
     def aplicar_tema(self, escuro: bool):
-        cor_fundo  = "#1E1E1E" if escuro else BG_CINZA_ESCURO
-        cor_cartao = "#2D2D2D" if escuro else BG_BRANCO
-        cor_texto  = "#FFFFFF" if escuro else COR_TITULO
-        cor_campo  = "#3A3A3A" if escuro else "white"
-        cor_campo_fg = "#FFFFFF" if escuro else "black"
+        cor_fundo  = "#CFCFCF" if escuro else BG_CINZA_ESCURO
+        cor_cartao = "#F2F2F2" if escuro else BG_BRANCO
+        cor_texto  = "#000000"
+        cor_campo  = "#FFFFFF" if escuro else "white"
+        cor_campo_fg = "#000000"
 
         self.configure(bg=cor_fundo)
         self.lbl_titulo.configure(bg=cor_fundo, fg=cor_texto)
@@ -308,7 +312,8 @@ class HomePage(tk.Frame):
         self.campo_tarefa.configure(bg=cor_campo, fg=cor_campo_fg,
                                     insertbackground=cor_campo_fg)
         
-        self.btn_adicionar.configure(bg=BG_BOTAO_VERDE)
+        self.btn_adicionar.configure(bg=BG_BOTAO_VERDE, fg=cor_texto,
+                                     activeforeground=cor_texto)
         
         self.canvas.configure(bg=cor_cartao)
         self.area_tarefas.configure(bg=cor_cartao)
