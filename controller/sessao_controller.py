@@ -75,19 +75,22 @@ class SessaoController:
         self._cancelar_lembrete_hidratacao()
 
     def executar_ciclo_temporizador(self):
-        if self.temporizador_rodando and self.tempo_restante_segundos > 0:
-            self.tempo_restante_segundos       -= 1
+        if not self.temporizador_rodando:
+            return
+        if self.tempo_restante_segundos > 0:
+            self.tempo_restante_segundos -= 1
             self.tempo_trabalho_total_restante -= 1
             self.atualizar_interface_relogio()
-            self.identificador_processo_temporizador = self.janela_principal.after(
-                1000, self.executar_ciclo_temporizador
-            )
-        elif self.tempo_restante_segundos <= 0:
+        if self.tempo_restante_segundos <= 0:
             self.pausar_temporizador()
             if self.tempo_trabalho_total_restante <= 0:
                 self.finalizar_jornada_completa()
             else:
                 self.disparar_alerta_alongamento()
+        else:
+            self.identificador_processo_temporizador = self.janela_principal.after(
+                1000, self.executar_ciclo_temporizador
+            )
 
     def ticar_tempo_total_durante_alongamento(self):
         if self.tempo_trabalho_total_restante > 0:
@@ -127,7 +130,6 @@ class SessaoController:
 
         alongamentos = self.banco_dados.buscar_alongamentos_por_dor(
             self.identificador_dor_selecionada,
-            self.identificador_usuario_logado
         )
 
         if not alongamentos:
