@@ -24,7 +24,7 @@ class LoginPage(tk.Frame):
         )
         self.btn_fechar.pack(side="right")
 
-        self.cartao = tk.Frame(self.contorno, bg="#FFFFFF")
+        self.cartao = tk.Frame(self.contorno, bg="#FFFFFF", highlightthickness=1)
         self.cartao.pack(expand=True, fill="both", padx=40, pady=(0, 30))
 
         self.conteudo_cartao = tk.Frame(self.cartao, bg="#FFFFFF")
@@ -79,9 +79,11 @@ class LoginPage(tk.Frame):
         self.btn_cadastro.pack(pady=(20, 0))
 
     def aplicar_tema(self, escuro: bool):
-        cor_tela = "#CFCFCF" if escuro else "#D9D9D9"
-        cor_cartao = "#F2F2F2" if escuro else "#FFFFFF"
-        cor_campo = "#FFFFFF" if escuro else "#F5F5F5"
+        cor_tela = "#AEB9B0" if escuro else "#EEF4EF"
+        cor_cartao = "#F8FAF7" if escuro else "#FFFFFF"
+        cor_campo = "#FFFFFF" if escuro else "#F7FAF8"
+        cor_borda = "#7F8C82" if escuro else "#D9E4DA"
+        cor_botao = "#CDEED7" if escuro else "#EAF7EE"
         cor_texto = "#000000"
 
         self.configure(bg=cor_tela)
@@ -89,15 +91,16 @@ class LoginPage(tk.Frame):
         self.barra_superior.configure(bg=cor_tela)
         self.btn_fechar.configure(bg=cor_tela, fg=cor_texto,
                                   activebackground=cor_tela, activeforeground=cor_texto)
-        self.cartao.configure(bg=cor_cartao)
+        self.cartao.configure(bg=cor_cartao, highlightbackground=cor_borda,
+                              highlightcolor=cor_borda)
         self.conteudo_cartao.configure(bg=cor_cartao)
         for label in [self.lbl_titulo, self.lbl_email, self.lbl_senha, self.lbl_erro]:
             label.configure(bg=cor_cartao, fg=cor_texto)
         for entrada in [self.ent_email, self.ent_senha]:
             entrada.configure(bg=cor_campo, fg=cor_texto, insertbackground=cor_texto)
         for botao in [self.btn_login, self.btn_cadastro]:
-            botao.configure(bg=cor_cartao, fg=cor_texto,
-                            activebackground=cor_cartao, activeforeground=cor_texto)
+            botao.configure(bg=cor_botao, fg=cor_texto,
+                            activebackground="#B8E6C6", activeforeground=cor_texto)
 
     def _executar_login(self):
         email = self.ent_email.get().strip()

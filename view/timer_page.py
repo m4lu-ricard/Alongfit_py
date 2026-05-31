@@ -2,7 +2,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import font as tkfont
 
-BG_GERAL  = "#d9d9d9"
+BG_GERAL  = "#EEF4EF"
 BG_CARTAO = "#FFFFFF"
 COR_TEXTO = "#000000"
 COR_TITULO = "#000000"
@@ -61,7 +61,7 @@ class TimerPage(tk.Frame):
         self._build_progresso_semanal()
 
     def _build_timer_ativo(self):
-        self.cartao_timer = tk.Frame(self.coluna_esquerda, bg=BG_CARTAO)
+        self.cartao_timer = tk.Frame(self.coluna_esquerda, bg=BG_CARTAO, highlightthickness=1)
         self.cartao_timer.pack(fill="both", expand=True)
 
         self.lbl_tarefa_titulo = tk.Label(
@@ -105,7 +105,7 @@ class TimerPage(tk.Frame):
         ).pack(side="left", padx=10)
 
     def _build_tempo_total_restante(self):
-        self.cartao_total = tk.Frame(self.coluna_direita, bg=BG_CARTAO)
+        self.cartao_total = tk.Frame(self.coluna_direita, bg=BG_CARTAO, highlightthickness=1)
         # O cartão agora expande perfeitamente com margem inferior
         self.cartao_total.pack(pady=(0, 15), fill="both", expand=True)
 
@@ -125,7 +125,7 @@ class TimerPage(tk.Frame):
         self.lbl_total_valor.pack()
 
     def _build_progresso_semanal(self):
-        self.cartao_semanal = tk.Frame(self.coluna_direita, bg=BG_CARTAO)
+        self.cartao_semanal = tk.Frame(self.coluna_direita, bg=BG_CARTAO, highlightthickness=1)
         # O cartão agora expande perfeitamente com margem superior
         self.cartao_semanal.pack(pady=(15, 0), fill="both", expand=True)
 
@@ -169,11 +169,12 @@ class TimerPage(tk.Frame):
             self.var_texto_botao_pausa.set("Pausa")
 
     def aplicar_tema(self, escuro: bool):
-        cor_geral  = "#CFCFCF" if escuro else BG_GERAL
-        cor_cartao = "#F2F2F2" if escuro else BG_CARTAO
+        cor_geral  = "#AEB9B0" if escuro else BG_GERAL
+        cor_cartao = "#F8FAF7" if escuro else BG_CARTAO
         cor_texto  = "#000000"
         cor_titulo = "#000000"
-        cor_botoes = "#D8D8D8" if escuro else "#e5e7eb"
+        cor_botoes = "#DDE8DF" if escuro else "#E9EFEA"
+        cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
 
         self.configure(bg=cor_geral)
         self.contorno.configure(bg=cor_geral)
@@ -185,6 +186,8 @@ class TimerPage(tk.Frame):
 
         for w in [self.cartao_timer, self.rodape_timer, self.caixa_botoes_timer]:
             w.configure(bg=cor_cartao)
+        for cartao in [self.cartao_timer, self.cartao_total, self.cartao_semanal]:
+            cartao.configure(highlightbackground=cor_borda, highlightcolor=cor_borda)
         for lbl in [self.lbl_tarefa_titulo, self.lbl_nome_tarefa]:
             lbl.configure(bg=cor_cartao, fg=cor_texto)
         self.lbl_relogio.configure(bg=cor_cartao, fg=cor_titulo)

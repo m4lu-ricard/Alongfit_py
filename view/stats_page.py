@@ -18,8 +18,8 @@ sys.path.append(
 
 from controller.estatisticas_controller import EstatisticasController
 
-BG_BRANCO = "white"
-BG_CINZA_ESCURO = "#D9D9D9"
+BG_BRANCO = "#FFFFFF"
+BG_CINZA_ESCURO = "#EEF4EF"
 COR_TITULO = "#000000"
 COR_TEXTO = "#000000"
 
@@ -42,7 +42,7 @@ class StatsPage(tk.Frame):
         )
         self.lbl_titulo.pack(anchor="w", padx=20, pady=(20, 10))
 
-        self.contorno = tk.Frame(self, bg=BG_BRANCO)
+        self.contorno = tk.Frame(self, bg=BG_BRANCO, highlightthickness=1)
         self.contorno.pack(expand=True, fill="both", padx=20, pady=(0, 20))
 
         self._build_topo()
@@ -82,7 +82,7 @@ class StatsPage(tk.Frame):
             dias, qtd_alongamentos, minutos = [], [], []
 
         escuro = getattr(self.app, 'config_tema_escuro', False)
-        bg_color = "#F2F2F2" if escuro else "white"
+        bg_color = "#F8FAF7" if escuro else "white"
         text_color = "black"
 
         if not dias:
@@ -137,14 +137,16 @@ class StatsPage(tk.Frame):
         self.criar_grafico()
 
     def aplicar_tema(self, escuro: bool):
-        cor_fundo  = "#CFCFCF" if escuro else BG_CINZA_ESCURO
-        cor_cartao = "#F2F2F2" if escuro else BG_BRANCO
+        cor_fundo  = "#AEB9B0" if escuro else BG_CINZA_ESCURO
+        cor_cartao = "#F8FAF7" if escuro else BG_BRANCO
+        cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
         cor_texto  = "#000000"
         cor_texto_sec = "#000000"
 
         self.configure(bg=cor_fundo)
         self.lbl_titulo.configure(bg=cor_fundo, fg=cor_texto)
-        self.contorno.configure(bg=cor_cartao)
+        self.contorno.configure(bg=cor_cartao, highlightbackground=cor_borda,
+                                highlightcolor=cor_borda)
         self.topo.configure(bg=cor_cartao)
         self.lbl_mes.configure(bg=cor_cartao, fg=cor_texto_sec)
         self.frame_grafico.configure(bg=cor_cartao)

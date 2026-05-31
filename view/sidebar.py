@@ -2,10 +2,10 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import font as tkfont
 
-SIDEBAR_BG = "#FFFFFF"
+SIDEBAR_BG = "#F8FAF7"
 CARD_BG    = "#FFFFFF"
 TEXT_DARK  = "#000000"
-BTN_HOVER  = "#C8C8C8"
+BTN_HOVER  = "#DDE8DF"
 
 MENU_ITEMS = [
     ("home",   "homeLogo.png"),
@@ -93,16 +93,16 @@ class Sidebar(tk.Frame):
 
     def _refresh_buttons(self):
         bg_sidebar = self._bg_sidebar
-        bg_active  = "#FFFFFF" if bg_sidebar == "#CFCFCF" else CARD_BG
+        bg_active  = "#F8FAF7" if bg_sidebar == "#7F8C82" else CARD_BG
         for page_name, (container, icon_label) in self.buttons.items():
             bg = bg_active if page_name == self.active_page else bg_sidebar
             container.configure(bg=bg)
             icon_label.configure(bg=bg)
 
     def aplicar_tema(self, escuro: bool):
-        cor_sidebar = "#CFCFCF" if escuro else SIDEBAR_BG
+        cor_sidebar = "#7F8C82" if escuro else SIDEBAR_BG
         cor_texto   = "#000000"
-        cor_ativo   = "#FFFFFF" if escuro else CARD_BG
+        cor_ativo   = "#F8FAF7" if escuro else CARD_BG
 
         self.configure(bg=cor_sidebar)
         self.logo_frame.configure(bg=cor_sidebar)

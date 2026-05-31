@@ -18,7 +18,7 @@ class CadastroPage(tk.Frame):
         self.barra_superior = tk.Frame(self.contorno, bg="#D9D9D9")
         self.barra_superior.pack(fill="x", padx=20, pady=10)
 
-        self.cartao = tk.Frame(self.contorno, bg="#FFFFFF")
+        self.cartao = tk.Frame(self.contorno, bg="#FFFFFF", highlightthickness=1)
         self.cartao.pack(expand=True, fill="both", padx=40, pady=(0, 30))
 
         self.conteudo_cartao = tk.Frame(self.cartao, bg="#FFFFFF")
@@ -71,23 +71,29 @@ class CadastroPage(tk.Frame):
         self.btn_cadastrar.pack(side="left", padx=10)
 
     def aplicar_tema(self, escuro: bool):
-        cor_tela = "#CFCFCF" if escuro else "#D9D9D9"
-        cor_cartao = "#F2F2F2" if escuro else "#FFFFFF"
-        cor_campo = "#FFFFFF" if escuro else "#F5F5F5"
+        cor_tela = "#AEB9B0" if escuro else "#EEF4EF"
+        cor_cartao = "#F8FAF7" if escuro else "#FFFFFF"
+        cor_campo = "#FFFFFF" if escuro else "#F7FAF8"
+        cor_borda = "#7F8C82" if escuro else "#D9E4DA"
+        cor_botao_neutro = "#DFE8E0" if escuro else "#E9EFEA"
+        cor_botao_acao = "#B8E6C6" if escuro else "#A7F3D0"
         cor_texto = "#000000"
 
         self.configure(bg=cor_tela)
         self.contorno.configure(bg=cor_tela)
         self.barra_superior.configure(bg=cor_tela)
-        self.cartao.configure(bg=cor_cartao)
+        self.cartao.configure(bg=cor_cartao, highlightbackground=cor_borda,
+                              highlightcolor=cor_borda)
         self.conteudo_cartao.configure(bg=cor_cartao)
         self.container_botoes.configure(bg=cor_cartao)
         for label in [self.lbl_titulo, self.lbl_nome, self.lbl_email, self.lbl_senha, self.lbl_data, self.lbl_status]:
             label.configure(bg=cor_cartao, fg=cor_texto)
         for entrada in [self.ent_nome, self.ent_email, self.ent_senha, self.ent_data]:
             entrada.configure(bg=cor_campo, fg=cor_texto, insertbackground=cor_texto)
-        for botao in [self.btn_voltar, self.btn_cadastrar]:
-            botao.configure(fg=cor_texto, activeforeground=cor_texto)
+        self.btn_voltar.configure(bg=cor_botao_neutro, fg=cor_texto,
+                                  activebackground="#D2DDD4", activeforeground=cor_texto)
+        self.btn_cadastrar.configure(bg=cor_botao_acao, fg=cor_texto,
+                                     activebackground="#9DE7B9", activeforeground=cor_texto)
 
     def _executar_cadastro(self):
         nome = self.ent_nome.get().strip()

@@ -228,7 +228,7 @@ class SessaoController:
             popup.geometry(f"{largura}x{altura}+{x}+{y}")
 
             escuro    = getattr(self.janela_principal, 'config_tema_escuro', False)
-            cor_fundo = "#F2F2F2" if escuro else "#FFFFFF"
+            cor_fundo = "#F8FAF7" if escuro else "#FFFFFF"
             cor_texto = "#000000"
             popup.configure(bg=cor_fundo)
 
@@ -239,7 +239,7 @@ class SessaoController:
                      bg=cor_fundo, fg=cor_texto,
                      font=("Helvetica", 13)).pack()
             tk.Button(popup, text="Ok, obrigado!",
-                      bg="#A7F3D0", fg="#000000",
+                      bg="#B8E6C6" if escuro else "#A7F3D0", fg="#000000",
                       font=("Helvetica", 13, "bold"),
                       relief="flat", cursor="hand2", padx=20, pady=8,
                       command=popup.destroy).pack(pady=24)

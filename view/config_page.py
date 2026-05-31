@@ -51,7 +51,7 @@ class ConfigPage(tk.Frame):
         )
         self.btn_x.pack(side="right")
 
-        self.cartao = tk.Frame(self.contorno, bg="#FFFFFF")
+        self.cartao = tk.Frame(self.contorno, bg="#FFFFFF", highlightthickness=1)
         self.cartao.pack(expand=True, fill="both", padx=60, pady=(0, 60))
 
         self.conteudo_cartao = tk.Frame(self.cartao, bg="#FFFFFF", padx=50, pady=40)
@@ -122,8 +122,9 @@ class ConfigPage(tk.Frame):
             self.app.aplicar_tema_global()
 
     def aplicar_tema(self, escuro: bool):
-        cor_tela   = "#CFCFCF" if escuro else "#D9D9D9"
-        cor_cartao = "#F2F2F2" if escuro else "#FFFFFF"
+        cor_tela   = "#AEB9B0" if escuro else "#EEF4EF"
+        cor_cartao = "#F8FAF7" if escuro else "#FFFFFF"
+        cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
         cor_texto  = "#000000"
         cor_titulo = "#000000"
         cor_chk    = "#FFFFFF"
@@ -135,7 +136,8 @@ class ConfigPage(tk.Frame):
         self.btn_x.configure(bg=cor_tela, fg=cor_texto,
                               activebackground=cor_tela, activeforeground=cor_texto)
 
-        self.cartao.configure(bg=cor_cartao)
+        self.cartao.configure(bg=cor_cartao, highlightbackground=cor_borda,
+                              highlightcolor=cor_borda)
         self.conteudo_cartao.configure(bg=cor_cartao)
         self.lbl_titulo_config.configure(bg=cor_cartao, fg=cor_titulo)
         self.form_frame.configure(bg=cor_cartao)

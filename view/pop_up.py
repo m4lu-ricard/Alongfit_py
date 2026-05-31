@@ -13,7 +13,7 @@ class PopUp(tk.Toplevel):
         self.timer_id = None
 
         self.geometry("380x420")
-        self.configure(bg="#A3E4A3")
+        self.configure(bg="#8BD9A7")
         self.overrideredirect(True)
 
         self._x_mouse = 0
@@ -64,7 +64,7 @@ class PopUp(tk.Toplevel):
         ).pack(side="right")
 
     def _build_cartao_principal(self):
-        self.cartao = tk.Frame(self, bg="white")
+        self.cartao = tk.Frame(self, bg="white", highlightthickness=1)
         self.cartao.pack(fill="both", expand=True, padx=8, pady=(0, 8))
 
         self.lbl_titulo_along = tk.Label(
@@ -88,7 +88,7 @@ class PopUp(tk.Toplevel):
         self.lbl_duracao.pack(pady=(0, 30))
 
         self.btn_iniciar = tk.Button(
-            self.cartao, text="Iniciar", bg="#A3E4A3", fg="black",
+            self.cartao, text="Iniciar", bg="#A7F3D0", fg="black",
             font=("Helvetica", 14, "bold"), relief="solid", bd=1,
             padx=30, pady=5, cursor="hand2",
             command=self.iniciar_cronometro_alongamento
@@ -132,10 +132,12 @@ class PopUp(tk.Toplevel):
         self.geometry(f"+{novo_x}+{novo_y}")
 
     def _aplicar_tema_popup(self, escuro: bool):
-        cor_cartao = "#F2F2F2" if escuro else "white"
+        cor_cartao = "#F8FAF7" if escuro else "white"
+        cor_borda = "#7F8C82" if escuro else "#D9E4DA"
         cor_texto  = "black"
 
-        self.cartao.configure(bg=cor_cartao)
+        self.cartao.configure(bg=cor_cartao, highlightbackground=cor_borda,
+                              highlightcolor=cor_borda)
         self.lbl_titulo_along.configure(bg=cor_cartao, fg=cor_texto)
         self.lbl_desc_along.configure(bg=cor_cartao, fg=cor_texto)
         self.lbl_duracao.configure(bg=cor_cartao, fg=cor_texto)

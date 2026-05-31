@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import font as tkfont
 
-BG_BRANCO       = "white"
-BG_CINZA_CLARO  = "#f0f0f0"
-BG_CINZA_ESCURO = "#D9D9D9"
-BG_BOTAO_VERDE  = "#a7f3d0"
-BG_BOTAO_CINZA  = "#c8d6ce"
+BG_BRANCO       = "#FFFFFF"
+BG_CINZA_CLARO  = "#F3F7F4"
+BG_CINZA_ESCURO = "#EEF4EF"
+BG_BOTAO_VERDE  = "#A7F3D0"
+BG_BOTAO_CINZA  = "#DDE8DF"
 COR_TEXTO       = "#000000"
 COR_TITULO      = "#000000"
 
@@ -299,15 +299,17 @@ class HomePage(tk.Frame):
 
 
     def aplicar_tema(self, escuro: bool):
-        cor_fundo  = "#CFCFCF" if escuro else BG_CINZA_ESCURO
-        cor_cartao = "#F2F2F2" if escuro else BG_BRANCO
+        cor_fundo  = "#AEB9B0" if escuro else BG_CINZA_ESCURO
+        cor_cartao = "#F8FAF7" if escuro else BG_BRANCO
         cor_texto  = "#000000"
         cor_campo  = "#FFFFFF" if escuro else "white"
         cor_campo_fg = "#000000"
+        cor_borda = "#7F8C82" if escuro else "#D9E4DA"
 
         self.configure(bg=cor_fundo)
         self.lbl_titulo.configure(bg=cor_fundo, fg=cor_texto)
-        self.contorno.configure(bg=cor_cartao)
+        self.contorno.configure(bg=cor_cartao, highlightbackground=cor_borda,
+                                highlightcolor=cor_borda, highlightthickness=1)
         self.frame_topo.configure(bg=cor_cartao)
         self.campo_tarefa.configure(bg=cor_campo, fg=cor_campo_fg,
                                     insertbackground=cor_campo_fg)
