@@ -171,10 +171,11 @@ class TimerPage(tk.Frame):
     def aplicar_tema(self, escuro: bool):
         cor_geral  = "#AEB9B0" if escuro else BG_GERAL
         cor_cartao = "#F8FAF7" if escuro else BG_CARTAO
-        cor_texto  = "#000000"
-        cor_titulo = "#000000"
-        cor_botoes = "#DDE8DF" if escuro else "#E9EFEA"
+        cor_texto  = "#000000" if escuro else "#000000"
+        cor_titulo = "#000000" if escuro else "#000000"
+        cor_botoes = "#DFE8E0" if escuro else "#E9EFEA"
         cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
+        cor_hover  = "#D2DDD4" if escuro else "#000000"
 
         self.configure(bg=cor_geral)
         self.contorno.configure(bg=cor_geral)
@@ -193,7 +194,7 @@ class TimerPage(tk.Frame):
         self.lbl_relogio.configure(bg=cor_cartao, fg=cor_titulo)
         for filho in self.caixa_botoes_timer.winfo_children():
             filho.configure(bg=cor_botoes, fg=cor_titulo,
-                            activebackground=cor_botoes, activeforeground=cor_titulo)
+                            activebackground=cor_hover, activeforeground=cor_titulo)
 
         self.cartao_total.configure(bg=cor_cartao)
         self.centro_total.configure(bg=cor_cartao)

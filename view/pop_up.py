@@ -134,10 +134,12 @@ class PopUp(tk.Toplevel):
     def _aplicar_tema_popup(self, escuro: bool):
         cor_cartao = "#F8FAF7" if escuro else "white"
         cor_borda = "#7F8C82" if escuro else "#D9E4DA"
-        cor_texto  = "black"
+        cor_texto  = "#000000" if escuro else "black"
 
         self.cartao.configure(bg=cor_cartao, highlightbackground=cor_borda,
                               highlightcolor=cor_borda)
         self.lbl_titulo_along.configure(bg=cor_cartao, fg=cor_texto)
         self.lbl_desc_along.configure(bg=cor_cartao, fg=cor_texto)
         self.lbl_duracao.configure(bg=cor_cartao, fg=cor_texto)
+        self.btn_iniciar.configure(bg="#B8E6C6" if escuro else "#A7F3D0",
+                                   fg="#AEB9B0" if escuro else "black")

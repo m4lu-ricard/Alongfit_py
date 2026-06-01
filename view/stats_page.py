@@ -52,17 +52,51 @@ class StatsPage(tk.Frame):
         self.topo = tk.Frame(self.contorno, bg=BG_BRANCO)
         self.topo.pack(fill="x", padx=30, pady=20)
 
+        # Custom style for Combobox
+        style = ttk.Style()
+
+        # Use a more modern theme to avoid native rendering artifacts
+        style.theme_use("clam")
+
+        style.configure(
+            "Mes.TCombobox",
+            padding=6,
+            font=("Helvetica", 11),
+            fieldbackground="#F3F7F4",
+            background="#F3F7F4",
+            foreground="#000000",
+            borderwidth=0
+        )
+
+        style.map(
+            "Mes.TCombobox",
+            fieldbackground=[("readonly", "#F3F7F4")],
+            background=[("readonly", "#F3F7F4")]
+        )
+
+        # Selector card container for label + combobox
+        self.selector_card = tk.Frame(self.topo, bg="#F3F7F4", padx=10, pady=6)
+        self.selector_card.pack(side="left")
+
         self.lbl_mes = tk.Label(
-            self.topo, text="Selecionar mês:", bg=BG_BRANCO,
-            fg=COR_TEXTO, font=("Helvetica", 12)
+            self.selector_card,
+            text="Selecionar mês:",
+            bg="#F3F7F4",
+            fg=COR_TEXTO,
+            font=("Helvetica", 12, "bold")
         )
         self.lbl_mes.pack(side="left")
 
-        self.combo_mes = ttk.Combobox(self.topo, state="readonly", width=15)
+        self.combo_mes = ttk.Combobox(
+            self.selector_card,
+            state="readonly",
+            width=12,
+            style="Mes.TCombobox"
+        )
         self.combo_mes["values"] = [str(i) for i in range(1, 13)]
-        self.combo_mes.pack(side="left", padx=10)
         self.combo_mes.set(str(datetime.now().month))
         self.combo_mes.bind("<<ComboboxSelected>>", self.atualizar_grafico)
+        self.combo_mes.pack(side="left", padx=8)
 
     def _build_grafico(self):
         self.frame_grafico = tk.Frame(self.contorno, bg="white")
@@ -76,14 +110,15 @@ class StatsPage(tk.Frame):
         mes = self.combo_mes.get()
 
         try:
-            dias, qtd_alongamentos, minutos = self.controller.buscar_dados_mes(mes)
+            dias, qtd_alongamentos, minutos, eh_mock = self.controller.buscar_dados_mes(mes)
         except AttributeError:
             print("Aviso: O método 'buscar_dados_mes' ainda não existe no EstatisticasController.")
             dias, qtd_alongamentos, minutos = [], [], []
+            eh_mock = False
 
         escuro = getattr(self.app, 'config_tema_escuro', False)
         bg_color = "#F8FAF7" if escuro else "white"
-        text_color = "black"
+        text_color = "#000000" if escuro else "black"
 
         if not dias:
             tk.Label(
@@ -110,7 +145,8 @@ class StatsPage(tk.Frame):
             width=largura, label="Tempo Total (min)", color="#4A9EFF"
         )
 
-        ax.set_title(f"Alongamentos - Mês {mes}", color=text_color)
+        sufixo_titulo = " (dados demonstrativos)" if eh_mock else ""
+        ax.set_title(f"Alongamentos - Mês {mes}{sufixo_titulo}", color=text_color)
         ax.set_xlabel("Dias", color=text_color)
         ax.set_ylabel("Quantidade / Minutos", color=text_color)
 
@@ -140,8 +176,8 @@ class StatsPage(tk.Frame):
         cor_fundo  = "#AEB9B0" if escuro else BG_CINZA_ESCURO
         cor_cartao = "#F8FAF7" if escuro else BG_BRANCO
         cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
-        cor_texto  = "#000000"
-        cor_texto_sec = "#000000"
+        cor_texto  = "#000000" if escuro else "#000000"
+        cor_texto_sec = "#000000" if escuro else "#000000"
 
         self.configure(bg=cor_fundo)
         self.lbl_titulo.configure(bg=cor_fundo, fg=cor_texto)

@@ -1,5 +1,13 @@
 from controller.gerenciador_banco import GerenciadorBanco
 
+
+DADOS_MOCK_GRAFICO = {
+    "dias": ["02", "04", "07", "09", "12", "15", "18", "21", "24", "28"],
+    "qtd_alongamentos": [2, 1, 3, 2, 4, 2, 3, 5, 2, 4],
+    "minutos_total": [4, 3, 8, 5, 10, 6, 7, 12, 5, 9],
+}
+
+
 class EstatisticasController:
     def __init__(self, identificador_usuario_ativo):
         self.banco_dados = GerenciadorBanco()
@@ -29,6 +37,13 @@ class EstatisticasController:
         mes_formatado = str(mes).zfill(2)
         
         resultados = self.banco_dados.obter_dados_grafico_mes(self.identificador_usuario_ativo, mes_formatado)
+        if not resultados:
+            return (
+                DADOS_MOCK_GRAFICO["dias"],
+                DADOS_MOCK_GRAFICO["qtd_alongamentos"],
+                DADOS_MOCK_GRAFICO["minutos_total"],
+                True,
+            )
         
         dias = []
         qtd_alongamentos = []
@@ -43,4 +58,4 @@ class EstatisticasController:
             qtd_alongamentos.append(qtd)
             minutos_total.append(minutos)
             
-        return dias, qtd_alongamentos, minutos_total
+        return dias, qtd_alongamentos, minutos_total, False

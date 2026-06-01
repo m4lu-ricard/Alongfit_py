@@ -125,9 +125,9 @@ class ConfigPage(tk.Frame):
         cor_tela   = "#AEB9B0" if escuro else "#EEF4EF"
         cor_cartao = "#F8FAF7" if escuro else "#FFFFFF"
         cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
-        cor_texto  = "#000000"
-        cor_titulo = "#000000"
-        cor_chk    = "#FFFFFF"
+        cor_texto  = "#000000" if escuro else "#000000"
+        cor_titulo = "#000000" if escuro else "#000000"
+        cor_chk    = "#B8E6C6" if escuro else "#FFFFFF"
 
         self.configure(bg=cor_tela)
         self.contorno.configure(bg=cor_tela)

@@ -65,8 +65,9 @@ class Sidebar(tk.Frame):
 
         def on_enter(e):
             if page_name != self.active_page:
-                container.configure(bg=BTN_HOVER)
-                icon_label.configure(bg=BTN_HOVER)
+                hover = self._hover_sidebar
+                container.configure(bg=hover)
+                icon_label.configure(bg=hover)
 
         def on_leave(e):
             if page_name != self.active_page:
@@ -84,6 +85,10 @@ class Sidebar(tk.Frame):
     @property
     def _bg_sidebar(self):
         return self.cget("bg")
+
+    @property
+    def _hover_sidebar(self):
+        return "#6F7E72" if self._bg_sidebar == "#7F8C82" else BTN_HOVER
 
     def select_page(self, page_name):
         self.active_page = page_name
