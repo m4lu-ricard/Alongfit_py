@@ -42,6 +42,12 @@ class AuthController:
 
     def cadastrar_novo_usuario(self, nome, email, senha, data_nasc):
         try:
+            # Monta o Usuario antes de gravar para aplicar as regras do model.
+            Usuario(idUsuario=None, nome=nome, email=email, senha=senha, dataNasc=data_nasc)
+        except ValueError as erro_validacao:
+            return False, str(erro_validacao)
+
+        try:
             self.banco_dados.inserir_usuario(nome, email, senha, data_nasc)
             return True, "Cadastro realizado com sucesso!"
         except Exception as e:
