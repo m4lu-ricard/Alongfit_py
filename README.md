@@ -55,6 +55,18 @@ python view/app.py
 
 > **Aviso sobre o Banco de Dados:** Não é necessário instalar nenhum servidor de banco de dados (como MySQL ou Postgres). Ao rodar o `app.py` pela primeira vez, o controlador do sistema executará os scripts da pasta `dao/` silenciosamente e criará o arquivo físico `alongfit.db` na raiz do seu projeto, já pronto para uso.
 
+## 🧪 Testes Automatizados
+
+Os testes ficam na pasta `tests/` e usam o PyTest. Cada teste cria um banco temporário próprio, então o seu `alongfit.db` não é alterado.
+
+Com as dependências do app já instaladas, instale as de teste e rode a suíte na pasta raiz do projeto:
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+
+```
+
 ## 👥 Equipe de Desenvolvimento
 
 Software desenvolvido como projeto acadêmico para o curso de Engenharia de Software da Universidade Católica de Brasília (UCB).
