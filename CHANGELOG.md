@@ -22,6 +22,9 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 ### Corrigido
 - A tela de cadastro passa a aplicar as regras do `Usuario` (e-mail com "@" e senha com pelo menos 6 caracteres) antes de gravar no banco (#18).
 
+### Segurança
+- O sorteio do alongamento passa a usar `secrets.choice` em vez de `random.choice`, resolvendo a vulnerabilidade `python:S2245` apontada pelo SonarCloud (#12).
+
 ### Removido
 - `alongfit.db` do versionamento. O banco continua sendo criado na máquina de cada pessoa no primeiro uso (#14).
 
