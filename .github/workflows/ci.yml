@@ -23,7 +23,8 @@ jobs:
       # Só pacotes já compilados (--only-binary) e com versão e hash conferidos
       # (--require-hashes), para nenhum script de instalação rodar no pipeline.
       - name: Instalar dependências travadas
-        run: pip install --only-binary :all: --require-hashes -r requirements-ci.txt
+        run: |
+          pip install --only-binary :all: --require-hashes -r requirements-ci.txt
 
       - name: Rodar os testes com cobertura
         run: pytest
