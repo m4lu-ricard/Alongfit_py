@@ -59,7 +59,7 @@ python view/app.py
 
 Os testes ficam na pasta `tests/` e usam o PyTest. Cada teste cria um banco temporário próprio, então o seu `alongfit.db` não é alterado. Ao rodar o `pytest`, a cobertura de `model/` e `controller/` aparece no terminal e é gravada em `coverage.xml`.
 
-Os mesmos testes rodam automaticamente no GitHub Actions a cada push e pull request (arquivo `.github/workflows/ci.yml`). O resultado aparece na aba **Actions** e no próprio pull request.
+Os mesmos testes rodam automaticamente no GitHub Actions a cada push e pull request (arquivo `.github/workflows/ci.yml`). O resultado aparece na aba **Actions** e no próprio pull request. O pipeline instala as dependências pelo `requirements-ci.txt`, que trava as versões e os hashes de todos os pacotes; ao mudar o `requirements.txt` ou o `requirements-dev.txt`, gere esse arquivo de novo com o comando que está no começo dele.
 
 Com as dependências do app já instaladas, instale as de teste e rode a suíte na pasta raiz do projeto:
 

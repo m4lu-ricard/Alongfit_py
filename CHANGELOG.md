@@ -17,6 +17,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 - Lógica de tempo do cronômetro extraída do `SessaoController` para a classe `TempoSessao` (`model/tempo_sessao.py`), sem dependência de Tkinter. O comportamento do cronômetro não muda (#13).
 - `.gitignore` completado com banco de dados, ambientes virtuais, pastas de IDE e arquivos de cobertura (#14).
 - README: instalação pelo `pip install -r requirements.txt` e seção de testes (#9, #15, #16).
+- O pipeline instala as dependências pelo novo `requirements-ci.txt`, com versões e hashes travados e apenas pacotes já compilados, resolvendo 4 vulnerabilidades apontadas pelo SonarCloud (#23).
 
 ### Corrigido
 - A tela de cadastro passa a aplicar as regras do `Usuario` (e-mail com "@" e senha com pelo menos 6 caracteres) antes de gravar no banco (#18).
