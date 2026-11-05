@@ -8,6 +8,7 @@ from controller.gerenciador_banco import GerenciadorBanco
 from model.Pausas import Pausas
 from model.HistoricoAlon import HistoricoAlon
 from model.Alongamento import Alongamento
+from model.tempo_sessao import TempoSessao
 from view.pop_up import PopUp
 
 
@@ -17,9 +18,7 @@ class SessaoController:
         self.identificador_usuario_logado = identificador_usuario_logado
         self.banco_dados                 = GerenciadorBanco()
 
-        self.tempo_trabalho_total_restante  = 0
-        self.tempo_pausa_segundos           = 0
-        self.tempo_restante_segundos        = 0
+        self.tempo = TempoSessao()
 
         self.identificador_dor_selecionada       = None
         self.temporizador_rodando                = False
@@ -35,17 +34,34 @@ class SessaoController:
         except Exception:
             pass
 
+    # As telas leem e alteram estes valores diretamente; eles ficam guardados em self.tempo.
+    @property
+    def tempo_restante_segundos(self):
+        return self.tempo.restante_ciclo
+
+    @tempo_restante_segundos.setter
+    def tempo_restante_segundos(self, valor):
+        self.tempo.restante_ciclo = valor
+
+    @property
+    def tempo_trabalho_total_restante(self):
+        return self.tempo.restante_jornada
+
+    @tempo_trabalho_total_restante.setter
+    def tempo_trabalho_total_restante(self, valor):
+        self.tempo.restante_jornada = valor
+
+    @property
+    def tempo_pausa_segundos(self):
+        return self.tempo.duracao_ciclo
+
     def configurar_sessao(self, horas_trabalho, minutes_pausa, identificador_dor):
-        self.tempo_trabalho_total_restante = horas_trabalho * 3600
-        self.tempo_pausa_segundos          = minutes_pausa * 60
         self.identificador_dor_selecionada = identificador_dor
-        self._definir_proximo_ciclo()
+        self.tempo.configurar(horas_trabalho, minutes_pausa)
+        self.atualizar_interface_relogio()
 
     def _definir_proximo_ciclo(self):
-        if self.tempo_trabalho_total_restante > self.tempo_pausa_segundos:
-            self.tempo_restante_segundos = self.tempo_pausa_segundos
-        else:
-            self.tempo_restante_segundos = self.tempo_trabalho_total_restante
+        self.tempo.preparar_proximo_ciclo()
         self.atualizar_interface_relogio()
 
     def vincular_interface_relogio(self, funcao_atualizacao):
@@ -77,27 +93,31 @@ class SessaoController:
     def executar_ciclo_temporizador(self):
         if not self.temporizador_rodando:
             return
-        if self.tempo_restante_segundos > 0:
-            self.tempo_restante_segundos -= 1
-            self.tempo_trabalho_total_restante -= 1
-            self.atualizar_interface_relogio()
-        if self.tempo_restante_segundos <= 0:
-            self.pausar_temporizador()
-            if self.tempo_trabalho_total_restante <= 0:
-                self.finalizar_jornada_completa()
-            else:
-                self.disparar_alerta_alongamento()
+        situacao = self.tempo.avancar_um_segundo()
+        self.atualizar_interface_relogio()
+        if situacao == TempoSessao.CICLO_EM_ANDAMENTO:
+            self._agendar_proximo_segundo()
         else:
-            self.identificador_processo_temporizador = self.janela_principal.after(
-                1000, self.executar_ciclo_temporizador
-            )
+            self._encerrar_ciclo(situacao)
+
+    def _agendar_proximo_segundo(self):
+        self.identificador_processo_temporizador = self.janela_principal.after(
+            1000, self.executar_ciclo_temporizador
+        )
+
+    def _encerrar_ciclo(self, situacao):
+        self.pausar_temporizador()
+        if situacao == TempoSessao.FIM_DA_JORNADA:
+            self.finalizar_jornada_completa()
+        else:
+            self.disparar_alerta_alongamento()
 
     def ticar_tempo_total_durante_alongamento(self):
-        if self.tempo_trabalho_total_restante > 0:
-            self.tempo_trabalho_total_restante -= 1
-            self.atualizar_interface_relogio()
-            if self.tempo_trabalho_total_restante <= 0:
-                self.finalizar_jornada_completa()
+        if not self.tempo.descontar_da_jornada():
+            return
+        self.atualizar_interface_relogio()
+        if self.tempo.jornada_encerrada():
+            self.finalizar_jornada_completa()
 
     def atualizar_interface_relogio(self):
         if self.funcao_atualizar_texto_relogio:
@@ -169,7 +189,7 @@ class SessaoController:
         PopUp(self.janela_principal, controller=self, alongamento=alongamento)
 
     def retomar_apos_alongamento(self):
-        if self.tempo_trabalho_total_restante <= 0:
+        if self.tempo.jornada_encerrada():
             self.finalizar_jornada_completa()
             return
         self._definir_proximo_ciclo()
