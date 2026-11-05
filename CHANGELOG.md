@@ -20,6 +20,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 - O pipeline instala as dependências pelo novo `requirements-ci.txt`, com versões e hashes travados e apenas pacotes já compilados, resolvendo 4 vulnerabilidades apontadas pelo SonarCloud (#23).
 
 ### Corrigido
+- 10 bugs de confiabilidade do SonarCloud (regra `python:S3923`): expressões condicionais que devolviam a mesma cor nos dois lados foram simplificadas, sem mudança visual (#11).
 - A tela de cadastro passa a aplicar as regras do `Usuario` (e-mail com "@" e senha com pelo menos 6 caracteres) antes de gravar no banco (#18).
 
 ### Segurança

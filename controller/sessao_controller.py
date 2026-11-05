@@ -248,7 +248,7 @@ class SessaoController:
 
             escuro    = getattr(self.janela_principal, 'config_tema_escuro', False)
             cor_fundo = "#F8FAF7" if escuro else "#FFFFFF"
-            cor_texto = "#000000" if escuro else "#000000"
+            cor_texto = "#000000"
             popup.configure(bg=cor_fundo)
 
             tk.Label(popup, text="💧 Hora de beber água!",
