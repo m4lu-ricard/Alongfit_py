@@ -88,8 +88,8 @@ class AlongamentoPage(tk.Frame):
     def aplicar_tema(self, escuro: bool):
         cor_fundo  = "#AEB9B0" if escuro else "#EEF4EF"
         cor_cartao = "#F8FAF7" if escuro else "white"
-        cor_texto  = "#000000" if escuro else "#000000"
-        cor_sub    = "#000000" if escuro else "#000000"
+        cor_texto  = "#000000"
+        cor_sub    = "#000000"
         cor_botao  = "#DFE8E0" if escuro else "#E9EFEA"
         cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
 

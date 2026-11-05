@@ -176,8 +176,8 @@ class StatsPage(tk.Frame):
         cor_fundo  = "#AEB9B0" if escuro else BG_CINZA_ESCURO
         cor_cartao = "#F8FAF7" if escuro else BG_BRANCO
         cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
-        cor_texto  = "#000000" if escuro else "#000000"
-        cor_texto_sec = "#000000" if escuro else "#000000"
+        cor_texto  = "#000000"
+        cor_texto_sec = "#000000"
 
         self.configure(bg=cor_fundo)
         self.lbl_titulo.configure(bg=cor_fundo, fg=cor_texto)

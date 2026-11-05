@@ -118,7 +118,7 @@ class LoginPage(tk.Frame):
         cor_borda = "#7F8C82" if escuro else "#D9E4DA"
         cor_botao = "#B8E6C6" if escuro else "#EAF7EE"
         cor_hover = "#9DE7B9" if escuro else "#B8E6C6"
-        cor_texto = "#000000" if escuro else "#000000"
+        cor_texto = "#000000"
 
         self.configure(bg=cor_tela)
         self.contorno.configure(bg=cor_tela)

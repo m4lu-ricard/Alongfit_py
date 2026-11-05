@@ -19,6 +19,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 - README: instalação pelo `pip install -r requirements.txt` e seção de testes (#9, #15, #16).
 
 ### Corrigido
+- 10 bugs de confiabilidade do SonarCloud (regra `python:S3923`): expressões condicionais que devolviam a mesma cor nos dois lados foram simplificadas, sem mudança visual (#11).
 - A tela de cadastro passa a aplicar as regras do `Usuario` (e-mail com "@" e senha com pelo menos 6 caracteres) antes de gravar no banco (#18).
 
 ### Removido

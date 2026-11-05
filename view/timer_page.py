@@ -171,8 +171,8 @@ class TimerPage(tk.Frame):
     def aplicar_tema(self, escuro: bool):
         cor_geral  = "#AEB9B0" if escuro else BG_GERAL
         cor_cartao = "#F8FAF7" if escuro else BG_CARTAO
-        cor_texto  = "#000000" if escuro else "#000000"
-        cor_titulo = "#000000" if escuro else "#000000"
+        cor_texto  = "#000000"
+        cor_titulo = "#000000"
         cor_botoes = "#DFE8E0" if escuro else "#E9EFEA"
         cor_borda  = "#7F8C82" if escuro else "#D9E4DA"
         cor_hover  = "#D2DDD4" if escuro else "#000000"
