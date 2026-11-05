@@ -57,7 +57,7 @@ python view/app.py
 
 ## 🧪 Testes Automatizados
 
-Os testes ficam na pasta `tests/` e usam o PyTest. Cada teste cria um banco temporário próprio, então o seu `alongfit.db` não é alterado.
+Os testes ficam na pasta `tests/` e usam o PyTest. Cada teste cria um banco temporário próprio, então o seu `alongfit.db` não é alterado. Ao rodar o `pytest`, a cobertura de `model/` e `controller/` aparece no terminal e é gravada em `coverage.xml`.
 
 Com as dependências do app já instaladas, instale as de teste e rode a suíte na pasta raiz do projeto:
 

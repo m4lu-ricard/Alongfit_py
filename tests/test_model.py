@@ -59,3 +59,13 @@ def test_alongamento_rejeita_nome_em_branco():
 def test_jornada_rejeita_lembrete_negativo():
     with pytest.raises(ValueError, match="não pode ser um valor negativo"):
         JornadaTrabalho(None, "Foco", 2, -10, 1, 1)
+
+
+def test_tipo_dor_exige_regiao_do_corpo():
+    from model.TipoDor import TipoDor
+
+    dor = TipoDor(1, "Cervicalgia", None, "Pescoço")
+    assert dor.descricao == ""
+
+    with pytest.raises(ValueError, match="região do corpo"):
+        TipoDor(1, "Cervicalgia", "dor no pescoço", " ")
