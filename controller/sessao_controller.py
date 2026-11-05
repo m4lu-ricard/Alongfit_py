@@ -1,7 +1,7 @@
 import tkinter as tk
 from pathlib import Path
 import pygame
-import random
+import secrets
 
 from datetime import timedelta, datetime
 from controller.gerenciador_banco import GerenciadorBanco
@@ -161,8 +161,7 @@ class SessaoController:
                 duracao=30
             )
         else:
-            import random
-            alongamento = random.choice(alongamentos)
+            alongamento = secrets.choice(alongamentos)
 
         try:
             agora  = datetime.now()
