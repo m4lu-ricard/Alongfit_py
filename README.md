@@ -31,18 +31,18 @@ O código-fonte foi estruturado seguindo o padrão de projeto **Model-View-Contr
 
 ### 1. Pré-requisitos
 
-Certifique-se de ter o **Python 3** instalado em sua máquina. Para o pleno funcionamento da tela de estatísticas, é necessário instalar a biblioteca externa responsável pelos gráficos.
+Certifique-se de ter o **Python 3** instalado em sua máquina (o grupo usa o Python 3.13). As bibliotecas externas usadas pelo app são o **Matplotlib** (gráficos da tela de estatísticas) e o **Pygame** (som do alerta de pausa).
 
 ### 2. Instalação das Dependências
 
-Abra o seu terminal e instale o Matplotlib utilizando o gerenciador de pacotes do Python:
+Abra o terminal na pasta raiz do projeto e instale as dependências listadas no `requirements.txt`, que já traz as versões fixadas:
 
 ```bash
-pip install matplotlib
+pip install -r requirements.txt
 
 ```
 
-*(Caso o comando acima não seja reconhecido, utilize `python -m pip install matplotlib`).*
+*(Caso o comando acima não seja reconhecido, utilize `python -m pip install -r requirements.txt`).*
 
 ### 3. Execução
 
@@ -58,6 +58,8 @@ python view/app.py
 ## 🧪 Testes Automatizados
 
 Os testes ficam na pasta `tests/` e usam o PyTest. Cada teste cria um banco temporário próprio, então o seu `alongfit.db` não é alterado. Ao rodar o `pytest`, a cobertura de `model/` e `controller/` aparece no terminal e é gravada em `coverage.xml`.
+
+Os mesmos testes rodam automaticamente no GitHub Actions a cada push e pull request (arquivo `.github/workflows/ci.yml`). O resultado aparece na aba **Actions** e no próprio pull request.
 
 Com as dependências do app já instaladas, instale as de teste e rode a suíte na pasta raiz do projeto:
 
