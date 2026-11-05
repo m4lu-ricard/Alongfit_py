@@ -1,1 +1,20 @@
+# Python
 __pycache__/
+*.py[cod]
+
+# Ambientes virtuais
+.venv/
+venv/
+
+# IDEs
+.idea/
+.vscode/
+
+# Banco de dados local (criado automaticamente na primeira execucao)
+*.db
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
